@@ -10,6 +10,9 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+#include "Map.h"
+#include "Matrix.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -51,6 +54,18 @@ class GameScene {
 	ViewProjection camera1;
 
 	Model* model = nullptr;
+
+	//マップ
+	Map* map_ = new Map;
+	Map* savemap_ = new Map;
+	//マップの座標
+	WorldTransform worldTransform_[10][10][10];
+	Map* map[blockY][blockZ][blockX] = {};
+
+	//マップ用画像
+
+	uint32_t textureHandleGround = 0;
+	uint32_t textureHandleWall = 0;
 
 	/// <summary>
 	/// ゲームシーン用

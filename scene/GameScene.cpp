@@ -20,9 +20,40 @@ void GameScene::Initialize() {
 	camera1.Initialize();
 
 	model = Model::Create();
+
+	//マップ用画像
+	textureHandleGround = TextureManager::Load("ground.png");
+	textureHandleWall = TextureManager::Load("wall.png");
+
+	map_->Loding("map/map1.csv");
+	savemap_->Loding("map/map1.csv");
+
+	//マップの座標の初期化
+	for (int i = 0; i < blockY; i++)
+	{
+		for (int j = 0; j < blockZ; j++)
+		{
+			for (int k = 0; k < blockX; k++)
+			{
+				worldTransform_[i][j][k].Initialize();
+				worldTransform_[i][j][k].translation_.x = k * blockSize * blockScale;
+				worldTransform_[i][j][k].translation_.y = i * blockSize * blockScale;
+				worldTransform_[i][j][k].translation_.z = j * blockSize * blockScale;
+				worldTransform_[i][j][k].scale_ = { blockScale,blockScale,blockScale };
+				worldTransformUpdate(&worldTransform_[i][j][k]);
+			}
+		}
+	}
+
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+
+	camera1.eye = { 0,100,-10 };
+	camera1.target = { 0,0,10 };
+
+	camera1.UpdateMatrix();
+}
 
 void GameScene::Draw() {
 
@@ -50,6 +81,26 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+
+		//マップの描画
+	for (int i = 0; i < blockY; i++)
+	{
+		for (int j = 0; j < blockZ; j++)
+		{
+			for (int k = 0; k < blockX; k++)
+			{
+				if (savemap_->map[i][j][k] == 1)
+				{
+					if (i == 1) {
+						model->Draw(worldTransform_[i][j][k], camera1, textureHandleWall);
+					}
+					else {
+						model->Draw(worldTransform_[i][j][k], camera1, textureHandleGround);
+					}
+				}
+			}
+		}
+	}
 
 	model->Draw(block, camera1);
 
