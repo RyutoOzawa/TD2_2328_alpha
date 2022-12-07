@@ -20,9 +20,14 @@ void GameScene::Initialize() {
 	camera1.Initialize();
 
 	model = Model::Create();
+
+	player = new Player();
+	player->Initialize();
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	player->Update();
+}
 
 void GameScene::Draw() {
 
@@ -52,6 +57,8 @@ void GameScene::Draw() {
 	/// </summary>
 
 	model->Draw(block, camera1);
+
+	player->Draw(camera1);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

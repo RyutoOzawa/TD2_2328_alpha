@@ -49,6 +49,7 @@ void Player::Move()
 		pos.z += playerSpd;
 	}
 
+	//À•W‚ğ”½‰f
 	worldTransform.translation_ = pos;
 }
 
