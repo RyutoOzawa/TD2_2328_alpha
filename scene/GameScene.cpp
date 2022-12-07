@@ -5,7 +5,6 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	delete model;
 }
 
 void GameScene::Initialize() {
@@ -15,15 +14,11 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
-	block.Initialize();
-
 	camera1.Initialize();
 	camera1.eye = Vector3(0, 50, -1);
 	camera1.target = Vector3(0, 0, 0);
 	//camera1.up = Vector3(0, -1, 0);
 	camera1.UpdateMatrix();
-
-	model = Model::Create();
 
 	player = new Player();
 	player->Initialize();
@@ -59,8 +54,6 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-
-	model->Draw(block, camera1);
 
 	player->Draw(camera1);
 

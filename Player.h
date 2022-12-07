@@ -6,6 +6,12 @@
 #include"MathUtility.h"
 #include"Input.h"
 
+enum stateIndex {
+	UnMagnet,
+	NorthPole,
+	SouthPole,
+};
+
 class Player
 {
 	/// <summary>
@@ -46,6 +52,10 @@ public:
 /// </summary>
 private:
 	void Move();
+
+	void ChangeState();
+
+
 	~Player();
 
 /// <summary>
@@ -54,5 +64,12 @@ private:
 private:
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
+	uint32_t whiteTexture = 0;
+
+	uint32_t redTexture = 0;
+	uint32_t blueTexture = 0;
+	uint32_t playerTexture = 0;
+
+	int state;
 };
 
