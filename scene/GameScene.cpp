@@ -18,6 +18,10 @@ void GameScene::Initialize() {
 	block.Initialize();
 
 	camera1.Initialize();
+	camera1.eye = Vector3(0, 50, -1);
+	camera1.target = Vector3(0, 0, 0);
+	//camera1.up = Vector3(0, -1, 0);
+	camera1.UpdateMatrix();
 
 	model = Model::Create();
 

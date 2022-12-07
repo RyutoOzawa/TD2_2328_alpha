@@ -1,4 +1,5 @@
 #include "Player.h"
+#include"matrix.h"
 
 Player::~Player()
 {
@@ -23,8 +24,7 @@ void Player::Update()
 	Move();
 
 	//çsóÒÇÃçXêV
-	worldTransform.TransferMatrix();
-
+	worldTransformUpdate(&worldTransform);
 }
 
 void Player::Draw(const ViewProjection& viewProjection_)
