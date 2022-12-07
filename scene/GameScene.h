@@ -47,6 +47,11 @@ class GameScene {
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
 
+	WorldTransform block;
+	ViewProjection camera1;
+
+	Model* model = nullptr;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
