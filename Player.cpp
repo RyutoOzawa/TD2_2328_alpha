@@ -24,7 +24,8 @@ void Player::Initialize()
 	blueTexture = TextureManager::Load("blue1x1.png");
 
 	playerTexture = whiteTexture;
-
+	//ÉTÉCÉYÇÃí≤êÆ
+	worldTransform.scale_ = Vector3(0.99, 0.99, 0.99);
 }
 
 void Player::Update()
@@ -116,35 +117,35 @@ void Player::OnMapCollision()
 
 void Player::OnMapCollisionX()
 {
-	pos.x -= 0.01;
+	pos.x -= adjustPixcelSpeed;
 
 }
 
 void Player::OnMapCollisionY()
 {
-	pos.y -= 0.01;
+	pos.y -= adjustPixcelSpeed;
 
 }
 
 void Player::OnMapCollisionZ()
 {
-	pos.z -= 0.01;
+	pos.z -= adjustPixcelSpeed;
 
 }
 
 void Player::OnMapCollisionX2()
 {
-	pos.x += 0.01;
+	pos.x += adjustPixcelSpeed;
 }
 
 void Player::OnMapCollisionY2()
 {
-	pos.y += 0.01;
+	pos.y += adjustPixcelSpeed;
 
 }
 
 void Player::OnMapCollisionZ2()
 {
-	pos.z += 0.01;
+	pos.z += adjustPixcelSpeed;
 
 }

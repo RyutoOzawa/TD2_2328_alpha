@@ -37,10 +37,6 @@ private:
 
 	bool isNorth = false;
 	float moveSpd = 0.025f;
-<<<<<<< sano
-=======
-};
->>>>>>> master
 
 	bool move = 1;
 };

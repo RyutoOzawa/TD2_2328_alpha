@@ -52,11 +52,9 @@ public:
 	float GetSize() { return size; }
 	Vector3 GetMove() { return move; }
 	float GetSpeed() { return playerSpd; }
-<<<<<<< sano
-	bool GetState()const { return state; }
-=======
+
 	int GetState()const { return state; }
->>>>>>> master
+	float GetAdjustPixcelSpeed() { return adjustPixcelSpeed; }
 
 	//セッター
 	void SetColX(Vector2 colX) { this->colX = colX; }
@@ -77,6 +75,7 @@ public:
 	Vector3 move = { 0,0,0 };
 
 	float playerSpd = 0.05f;
+	float adjustPixcelSpeed = 0.001;
 
 	int size = 2;
 
@@ -85,15 +84,11 @@ public:
 	Vector2 colZ = {};
 
 
-<<<<<<< sano
-	/// <summary>
-	/// メンバ関数で使うようの関数
-	/// </summary>
-=======
+
 /// <summary>
 /// メンバ関数で使うようの関数
 /// </summary>
->>>>>>> master
+
 private:
 	void Move();
 
