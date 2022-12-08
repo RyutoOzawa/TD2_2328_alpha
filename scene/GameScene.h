@@ -11,6 +11,9 @@
 #include "WorldTransform.h"
 #include"Player.h"
 
+#include "Map.h"
+#include "Matrix.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -42,6 +45,9 @@ class GameScene {
 	/// </summary>
 	void Draw();
 
+	//当たり判定
+	void MapCollision();
+
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -51,6 +57,27 @@ class GameScene {
 	ViewProjection camera1;
 
 	Player* player = nullptr;
+
+	//マップ
+
+	Model* model = nullptr;
+
+	Map* map_ = new Map;
+	Map* savemap_ = new Map;
+
+	//マップの座標
+	WorldTransform worldTransform_[10][10][10];
+	Map* map[blockY][blockZ][blockX] = {};
+
+	//マップ用画像
+
+	uint32_t textureHandleGround = 0;
+	uint32_t textureHandleWall = 0;
+
+	//当たっているか
+	Vector2 ColX = { 0,0 };
+	Vector2 ColY = { 0,0 };
+	Vector2 ColZ = { 0,0 };
 
 	/// <summary>
 	/// ゲームシーン用

@@ -59,23 +59,44 @@ void Player::Draw(const ViewProjection& viewProjection_)
 
 void Player::Move()
 {
-	float playerSpd = 0.05f;
-	
+
 	if (input_->PushKey(DIK_A)) {
-		pos.x -= playerSpd;
+		if (colX.y == 0) {
+			pos.x -= playerSpd;
+			move.x = -playerSpd;
+		}
+
 	}
-	if (input_->PushKey(DIK_D)) {
-		pos.x += playerSpd;
+	else if (input_->PushKey(DIK_D)) {
+		if (colX.x == 0) {
+			pos.x += playerSpd;
+			move.x = playerSpd;
+		}
 	}
+	else {
+		move.x = 0;
+	}
+
+
 	if (input_->PushKey(DIK_S)) {
-		pos.z -= playerSpd;
+		if (colZ.y == 0) {
+			pos.z -= playerSpd;
+			move.z = -playerSpd;
+		}
 	}
-	if (input_->PushKey(DIK_W)) {
-		pos.z += playerSpd;
+	else if (input_->PushKey(DIK_W)) {
+		if (colZ.x == 0) {
+			pos.z += playerSpd;
+			move.z = playerSpd;
+		}
+	}
+	else {
+		move.z = 0;
 	}
 
 	//ç¿ïWÇîΩâf
 	worldTransform.translation_ = pos;
+
 }
 
 void Player::ChangeState()
@@ -88,4 +109,41 @@ void Player::ChangeState()
 	}
 }
 
+void Player::OnMapCollision()
+{
+}
 
+void Player::OnMapCollisionX()
+{
+	pos.x -= 0.01;
+
+}
+
+void Player::OnMapCollisionY()
+{
+	pos.y -= 0.01;
+
+}
+
+void Player::OnMapCollisionZ()
+{
+	pos.z -= 0.01;
+
+}
+
+void Player::OnMapCollisionX2()
+{
+	pos.x += 0.01;
+}
+
+void Player::OnMapCollisionY2()
+{
+	pos.y += 0.01;
+
+}
+
+void Player::OnMapCollisionZ2()
+{
+	pos.z += 0.01;
+
+}
