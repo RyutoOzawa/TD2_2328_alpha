@@ -64,8 +64,8 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	player->Update();
 
-	nPoleBlock.Update();
-	sPoleBlock.Update();
+	nPoleBlock.Update(player->GetPosition(),4.0f);
+	sPoleBlock.Update(player->GetPosition(), 4.0f);
 
 	MapCollision();
 }

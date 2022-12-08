@@ -79,6 +79,7 @@ public:
 	Vector2 colY = {};
 	Vector2 colZ = {};
 
+
 /// <summary>
 /// ƒƒ“ƒoŠÖ”‚Åg‚¤‚æ‚¤‚ÌŠÖ”
 /// </summary>
