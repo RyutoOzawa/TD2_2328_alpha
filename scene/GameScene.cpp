@@ -56,16 +56,16 @@ void GameScene::Initialize() {
 	Vector3 nBlockPos{ 5,2,5 };
 	Vector3 sBlockPos{ 5,2,15 };
 
-	nPoleBlock.Initialize(nBlockPos,true);
-	sPoleBlock.Initialize(sBlockPos,false);
+	nPoleBlock.Initialize(nBlockPos, true);
+	sPoleBlock.Initialize(sBlockPos, false);
 
 }
 
 void GameScene::Update() {
 	player->Update();
 
-	nPoleBlock.Update(player->GetPosition(), 4.0f);
-	sPoleBlock.Update(player->GetPosition(), 4.0f);
+	nPoleBlock.Update(player->GetPosition(), player->GetState(), 4.0f);
+	sPoleBlock.Update(player->GetPosition(), player->GetState(), 4.0f);
 
 	MapCollision();
 	PosCollision();
@@ -319,8 +319,8 @@ void GameScene::PosCollision()
 
 	//0なし 1上　2下　3左　4右
 	int contact = 0;
-	int contactNum = 0;
-	int contactNum2 = 0;
+	int contactNumX = 0;
+	int contactNumZ = 0;
 
 	Vector3 setPos = {};
 
@@ -332,17 +332,25 @@ void GameScene::PosCollision()
 
 			debugText_->Printf("PS");
 
-			/*if (pPos.x > sPos.x) {
+			//Sブロックの挙動
+
+			if (pPos.x > sPos.x) {
 				contact = 1;
+				contactNumX = pPos.x - sPos.x;
 			}
 			else {
 				contact = 2;
+				contactNumX = sPos.x - pPos.x;
 			}
 
-			contactNum  = pPos.x - sPos.x;
-			contactNum2 = pPos.z - sPos.z;
+			if (pPos.z > sPos.z) {
+				contactNumZ = pPos.z - sPos.z;
+			}
+			else {
+				contactNumZ = sPos.z - pPos.z;
+			}
 
-			if (contactNum > contactNum2) {
+			if (contactNumX < contactNumZ) {
 
 				if (pPos.z > sPos.z) {
 					contact = 4;
@@ -350,20 +358,38 @@ void GameScene::PosCollision()
 				else {
 					contact = 3;
 				}
+
 			}
+
+			//座標を調節
 
 			setPos = sPoleBlock.GetPos();
 
 			if (contact == 1 || contact == 2) {
 				setPos.z = pPos.z;
 			}
-			else if(contact == 3 || contact == 4) {
+			else if (contact == 3 || contact == 4) {
 				setPos.x = pPos.x;
-			}*/
+			}
 
 
-			////sPoleBlock.SetPos(setPos);
+			sPoleBlock.SetPos(setPos);
 			sPoleBlock.SetMove(0);
+
+			//自機の挙動
+			
+			//if (contact == 1) {
+			//	ColZ.y = 1;
+			//}
+			//else if (contact == 2) {
+			//	ColZ.x = 1;
+			//}
+			//else if (contact == 3) {
+			//	ColX.y = 1;
+			//}
+			//else if (contact == 4) {
+			//	ColX.x = 1;
+			//}
 
 		}
 		else {
@@ -382,6 +408,49 @@ void GameScene::PosCollision()
 		if (pPosZ1 < nPosZ2 && nPosZ1 < pPosZ2) {
 
 			debugText_->Printf("PN");
+
+			//Nブロックの挙動
+
+			if (pPos.x > nPos.x) {
+				contact = 1;
+				contactNumX = pPos.x - nPos.x;
+			}
+			else {
+				contact = 2;
+				contactNumX = nPos.x - pPos.x;
+			}
+
+			if (pPos.z > nPos.z) {
+				contactNumZ = pPos.z - nPos.z;
+			}
+			else {
+				contactNumZ = nPos.z - pPos.z;
+			}
+
+			if (contactNumX < contactNumZ) {
+
+				if (nPos.z > nPos.z) {
+					contact = 4;
+				}
+				else {
+					contact = 3;
+				}
+
+			}
+
+			//座標を調節
+
+			setPos = nPoleBlock.GetPos();
+
+			if (contact == 1 || contact == 2) {
+				setPos.z = pPos.z;
+			}
+			else if (contact == 3 || contact == 4) {
+				setPos.x = pPos.x;
+			}
+
+
+			nPoleBlock.SetPos(setPos);
 			nPoleBlock.SetMove(0);
 
 		}

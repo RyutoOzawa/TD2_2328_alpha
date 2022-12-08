@@ -18,7 +18,7 @@ class Player
 	/// メンバ関数
 	/// </summary>
 
-	public:
+public:
 
 	/// <summary>
 	/// 初期化
@@ -52,16 +52,17 @@ class Player
 	float GetSize() { return size; }
 	Vector3 GetMove() { return move; }
 	float GetSpeed() { return playerSpd; }
+	bool GetState()const { return state; }
 
 	//セッター
 	void SetColX(Vector2 colX) { this->colX = colX; }
 	void SetColY(Vector2 colY) { this->colY = colY; }
 	void SetColZ(Vector2 colZ) { this->colZ = colZ; }
 
-	
-/// <summary>
-/// メンバ変数
-/// </summary>
+
+	/// <summary>
+	/// メンバ変数
+	/// </summary>
 public:
 
 	WorldTransform worldTransform;
@@ -79,9 +80,10 @@ public:
 	Vector2 colY = {};
 	Vector2 colZ = {};
 
-/// <summary>
-/// メンバ関数で使うようの関数
-/// </summary>
+
+	/// <summary>
+	/// メンバ関数で使うようの関数
+	/// </summary>
 private:
 	void Move();
 
@@ -90,9 +92,9 @@ private:
 
 	~Player();
 
-/// <summary>
-/// 外部で参照できないメンバ変数
-/// </summary>
+	/// <summary>
+	/// 外部で参照できないメンバ変数
+	/// </summary>
 private:
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
@@ -104,4 +106,3 @@ private:
 
 	int state;
 };
-
