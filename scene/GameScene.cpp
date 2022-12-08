@@ -29,6 +29,9 @@ void GameScene::Initialize() {
 	textureHandleGround = TextureManager::Load("ground.png");
 	textureHandleWall = TextureManager::Load("wall.png");
 
+	northPoleTexture = TextureManager::Load("red1x1.png");
+	southPoleTexture = TextureManager::Load("blue1x1.png");
+
 	map_->Loding("map/map1.csv");
 	savemap_->Loding("map/map1.csv");
 
@@ -50,11 +53,19 @@ void GameScene::Initialize() {
 	}
 
 
+	Vector3 nBlockPos{ 5,2,5 };
+	Vector3 sBlockPos{ 5,2,15 };
+
+	nPoleBlock.Initialize(nBlockPos,true);
+	sPoleBlock.Initialize(sBlockPos,false);
+
 }
 
 void GameScene::Update() {
 	player->Update();
 
+	nPoleBlock.Update();
+	sPoleBlock.Update();
 
 	MapCollision();
 }
@@ -87,6 +98,10 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player->Draw(camera1);
+
+	//磁石描画
+	nPoleBlock.Draw(camera1, northPoleTexture, southPoleTexture);
+	sPoleBlock.Draw(camera1, northPoleTexture, southPoleTexture);
 
 	//マップの描画
 	for (int i = 0; i < blockY; i++)

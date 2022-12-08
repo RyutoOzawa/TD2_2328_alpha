@@ -13,6 +13,7 @@
 
 #include "Map.h"
 #include "Matrix.h"
+#include"MagnetBlock.h"
 
 /// <summary>
 /// ゲームシーン
@@ -73,6 +74,13 @@ class GameScene {
 
 	uint32_t textureHandleGround = 0;
 	uint32_t textureHandleWall = 0;
+
+	//N極、S極のブロック関係
+	uint32_t northPoleTexture = 0;
+	uint32_t southPoleTexture = 0;
+
+	MagnetBlock nPoleBlock;
+	MagnetBlock sPoleBlock;
 
 	//当たっているか
 	Vector2 ColX = { 0,0 };
