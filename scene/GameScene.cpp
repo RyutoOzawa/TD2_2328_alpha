@@ -15,8 +15,8 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 
 	camera1.Initialize();
-	camera1.eye = Vector3(0, 50, -1);
-	camera1.target = Vector3(0, 0, 0);
+	camera1.eye = Vector3(8, 50, 9);
+	camera1.target = Vector3(8, 0, 10);
 	//camera1.up = Vector3(0, -1, 0);
 	camera1.UpdateMatrix();
 
@@ -64,8 +64,8 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	player->Update();
 
-	nPoleBlock.Update();
-	sPoleBlock.Update();
+	nPoleBlock.Update(player->GetPosition(), 4.0f);
+	sPoleBlock.Update(player->GetPosition(), 4.0f);
 
 	MapCollision();
 	PosCollision();
@@ -317,6 +317,13 @@ void GameScene::PosCollision()
 	//向き
 	int pInput;
 
+	//0なし 1上　2下　3左　4右
+	int contact = 0;
+	int contactNum = 0;
+	int contactNum2 = 0;
+
+	Vector3 setPos = {};
+
 	//自機とSブロック
 
 	if (pPosX1 < sPosX2 && sPosX1 < pPosX2) {
@@ -325,8 +332,47 @@ void GameScene::PosCollision()
 
 			debugText_->Printf("PS");
 
+			/*if (pPos.x > sPos.x) {
+				contact = 1;
+			}
+			else {
+				contact = 2;
+			}
+
+			contactNum  = pPos.x - sPos.x;
+			contactNum2 = pPos.z - sPos.z;
+
+			if (contactNum > contactNum2) {
+
+				if (pPos.z > sPos.z) {
+					contact = 4;
+				}
+				else {
+					contact = 3;
+				}
+			}
+
+			setPos = sPoleBlock.GetPos();
+
+			if (contact == 1 || contact == 2) {
+				setPos.z = pPos.z;
+			}
+			else if(contact == 3 || contact == 4) {
+				setPos.x = pPos.x;
+			}*/
+
+
+			////sPoleBlock.SetPos(setPos);
+			sPoleBlock.SetMove(0);
+
+		}
+		else {
+			sPoleBlock.SetMove(1);
 		}
 
+	}
+	else {
+		sPoleBlock.SetMove(1);
 	}
 
 	//自機とNブロック
@@ -336,10 +382,18 @@ void GameScene::PosCollision()
 		if (pPosZ1 < nPosZ2 && nPosZ1 < pPosZ2) {
 
 			debugText_->Printf("PN");
+			nPoleBlock.SetMove(0);
 
+		}
+		else {
+			nPoleBlock.SetMove(1);
 		}
 
 	}
+	else {
+		nPoleBlock.SetMove(1);
+	}
+
 
 	//SブロックとNブロック
 
