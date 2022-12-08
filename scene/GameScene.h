@@ -47,7 +47,12 @@ class GameScene {
 	void Draw();
 
 	//当たり判定
+	//マップ参照
 	void MapCollision();
+
+	//座標参照
+	void PosCollision();
+
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;

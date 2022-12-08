@@ -49,12 +49,12 @@ void Player::Update()
 	//s—ñ‚ÌXV
 	worldTransformUpdate(&worldTransform);
 
-	
+
 }
 
 void Player::Draw(const ViewProjection& viewProjection_)
 {
-	model->Draw(worldTransform, viewProjection_,playerTexture);
+	model->Draw(worldTransform, viewProjection_, playerTexture);
 }
 
 void Player::Move()
@@ -103,6 +103,7 @@ void Player::ChangeState()
 {
 	if (input_->TriggerKey(DIK_SPACE)) {
 		state++;
+		//state = SouthPole;
 		if (state > SouthPole) {
 			state = UnMagnet;
 		}

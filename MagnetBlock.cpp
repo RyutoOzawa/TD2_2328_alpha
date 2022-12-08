@@ -9,7 +9,7 @@ MagnetBlock::~MagnetBlock()
 
 void MagnetBlock::Initialize(const Vector3& pos, bool isNorth_)
 {
-	//ƒfƒoƒbƒOƒeƒLƒXƒg‚È‚ÇA”Ä—p‹@”\‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+	//ãƒ‡ãƒãƒƒã‚°ãƒ†ã‚­ã‚¹ãƒˆãªã©ã€æ±ç”¨æ©Ÿèƒ½ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 	debugText = DebugText::GetInstance();
 
 	model = Model::Create();
@@ -18,7 +18,7 @@ void MagnetBlock::Initialize(const Vector3& pos, bool isNorth_)
 
 	this->pos = pos;
 
-	//ˆø”‚Åó‚¯æ‚Á‚½À•W‚ğ”½‰f
+	//å¼•æ•°ã§å—ã‘å–ã£ãŸåº§æ¨™ã‚’åæ˜ 
 	worldTransform.translation_ = pos;
 	worldTransformUpdate(&worldTransform);
 
@@ -27,7 +27,56 @@ void MagnetBlock::Initialize(const Vector3& pos, bool isNorth_)
 
 void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDistance)
 {
-	//©‹@‚Ìó‘Ô‚ª¥Î‚È‚çˆø‚«Šñ‚¹“™‚Ìˆ—‚ğs‚¤
+<<<<<<< sano
+	if (move == 1) {
+		//è‡ªæ©Ÿã®çŠ¶æ…‹ãŒç£çŸ³ãªã‚‰å¼•ãå¯„ã›ç­‰ã®å‡¦ç†ã‚’è¡Œã†
+		if (playerState != UnMagnet) {
+			bool isPlayerNorth = false;
+			if (playerState == NorthPole) {
+				isPlayerNorth = true;
+			}
+			else if (playerState == SouthPole) {
+				isPlayerNorth = false;
+			}
+			bool isPull;
+			if (isPlayerNorth == isNorth) {
+
+				isPull = false;
+			}
+			else {
+				isPull = true;
+			}
+
+			//è‡ªæ©Ÿåº§æ¨™ã‚’å‚ç…§ã—ã€è‡ªæ©Ÿã¨ç£çŸ³ã®è·é›¢ã‚’è¨ˆç®—
+			Vector3 vecPlayerToblock;
+			vecPlayerToblock.x = playerPos.x - pos.x;
+			vecPlayerToblock.y = playerPos.y - pos.y;
+			vecPlayerToblock.z = playerPos.z - pos.z;
+			//ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•ã¯ç§»å‹•é–‹å§‹è·é›¢ä»¥ä¸‹ãªã‚‰è‡ªæ©Ÿã€ç£çŸ³ã®ç£åŠ›ã‚’ä½¿ã£ã¦å¼•ãå¯„ã›ç­‰ã®å‡¦ç†
+			float vecLength = vector3Length(vecPlayerToblock);
+			if (isPull) {
+
+				if (vecLength <= moveDistance) {
+					Vector3 moveVec;
+					moveVec = Vector3Normalize(vecPlayerToblock);
+					moveVec *= moveSpd;
+					pos.x += moveVec.x;
+					pos.y += moveVec.y;
+					pos.z += moveVec.z;
+				}
+			}
+			else {
+
+				if (vecLength <= moveDistance) {
+					Vector3 moveVec;
+					moveVec = Vector3Normalize(vecPlayerToblock);
+					moveVec *= moveSpd;
+					pos.x -= moveVec.x;
+					pos.y -= moveVec.y;
+					pos.z -= moveVec.z;
+				}
+=======
+	//è‡ªæ©Ÿã®çŠ¶æ…‹ãŒç£çŸ³ãªã‚‰å¼•ãå¯„ã›ç­‰ã®å‡¦ç†ã‚’è¡Œã†
 	if (playerState != UnMagnet) {
 		bool isPlayerNorth = false;
 		if (playerState == NorthPole) {
@@ -45,12 +94,12 @@ void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDi
 			isPull = true;
 		}
 
-		//©‹@À•W‚ğQÆ‚µA©‹@‚Æ¥Î‚Ì‹——£‚ğŒvZ
+		//è‡ªæ©Ÿåº§æ¨™ã‚’å‚ç…§ã—ã€è‡ªæ©Ÿã¨ç£çŸ³ã®è·é›¢ã‚’è¨ˆç®—
 		Vector3 vecPlayerToblock;
 		vecPlayerToblock.x = playerPos.x - pos.x;
 		vecPlayerToblock.y = playerPos.y - pos.y;
 		vecPlayerToblock.z = playerPos.z - pos.z;
-		//ƒxƒNƒgƒ‹‚Ì’·‚³‚ÍˆÚ“®ŠJn‹——£ˆÈ‰º‚È‚ç©‹@A¥Î‚Ì¥—Í‚ğg‚Á‚Äˆø‚«Šñ‚¹“™‚Ìˆ—
+		//ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•ã¯ç§»å‹•é–‹å§‹è·é›¢ä»¥ä¸‹ãªã‚‰è‡ªæ©Ÿã€ç£çŸ³ã®ç£åŠ›ã‚’ä½¿ã£ã¦å¼•ãå¯„ã›ç­‰ã®å‡¦ç†
 		float vecLength = vector3Length(vecPlayerToblock);
 		if (isPull) {
 
@@ -72,11 +121,12 @@ void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDi
 				pos.x -= moveVec.x;
 				pos.y -= moveVec.y;
 				pos.z -= moveVec.z;
+>>>>>>> master
 			}
 		}
 	}
 
-	//À•W‚ğ”½‰f
+	//åº§æ¨™ã‚’åæ˜ 
 	worldTransform.translation_ = pos;
 	worldTransformUpdate(&worldTransform);
 }

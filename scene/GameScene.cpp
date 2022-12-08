@@ -15,8 +15,8 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 
 	camera1.Initialize();
-	camera1.eye = Vector3(0, 50, -1);
-	camera1.target = Vector3(0, 0, 0);
+	camera1.eye = Vector3(8, 50, 9);
+	camera1.target = Vector3(8, 0, 10);
 	//camera1.up = Vector3(0, -1, 0);
 	camera1.UpdateMatrix();
 
@@ -68,6 +68,7 @@ void GameScene::Update() {
 	sPoleBlock.Update(player->GetPosition(), player->GetState(), 4.0f);
 
 	MapCollision();
+	PosCollision();
 }
 
 void GameScene::Draw() {
@@ -207,7 +208,7 @@ void GameScene::MapCollision()
 	}
 
 
-	debugText_->Printf("%f", ColX.y);
+	//debugText_->Printf("%f", ColX.y);
 
 
 	leftplayer = player->GetPosition().x;
@@ -276,3 +277,204 @@ void GameScene::MapCollision()
 	player->SetColZ(ColZ);
 
 }
+
+void GameScene::PosCollision()
+{
+
+	//nブロック
+
+	Vector3 nPos = nPoleBlock.GetPos();
+	float nSize = 2;
+
+	float nPosX1 = nPos.x - (nSize / 2);
+	float nPosX2 = nPos.x + (nSize / 2);
+
+	float nPosZ1 = nPos.z - (nSize / 2);
+	float nPosZ2 = nPos.z + (nSize / 2);
+
+	//sブロック
+
+	Vector3 sPos = sPoleBlock.GetPos();
+	float sSize = 2;
+
+	float sPosX1 = sPos.x - (sSize / 2);
+	float sPosX2 = sPos.x + (sSize / 2);
+
+	float sPosZ1 = sPos.z - (sSize / 2);
+	float sPosZ2 = sPos.z + (sSize / 2);
+
+	//自機
+
+	Vector3 pPos = player->GetPosition();
+	float pSize = player->GetSize();
+
+	float pPosX1 = pPos.x - (pSize / 2);
+	float pPosX2 = pPos.x + (pSize / 2);
+
+	float pPosZ1 = pPos.z - (pSize / 2);
+	float pPosZ2 = pPos.z + (pSize / 2);
+
+	//向き
+	int pInput;
+
+	//0なし 1上　2下　3左　4右
+	int contact = 0;
+	int contactNumX = 0;
+	int contactNumZ = 0;
+
+	Vector3 setPos = {};
+
+	//自機とSブロック
+
+	if (pPosX1 < sPosX2 && sPosX1 < pPosX2) {
+
+		if (pPosZ1 < sPosZ2 && sPosZ1 < pPosZ2) {
+
+			debugText_->Printf("PS");
+
+			//Sブロックの挙動
+
+			if (pPos.x > sPos.x) {
+				contact = 1;
+				contactNumX = pPos.x - sPos.x;
+			}
+			else {
+				contact = 2;
+				contactNumX = sPos.x - pPos.x;
+			}
+
+			if (pPos.z > sPos.z) {
+				contactNumZ = pPos.z - sPos.z;
+			}
+			else {
+				contactNumZ = sPos.z - pPos.z;
+			}
+
+			if (contactNumX < contactNumZ) {
+
+				if (pPos.z > sPos.z) {
+					contact = 4;
+				}
+				else {
+					contact = 3;
+				}
+
+			}
+
+			//座標を調節
+
+			setPos = sPoleBlock.GetPos();
+
+			if (contact == 1 || contact == 2) {
+				setPos.z = pPos.z;
+			}
+			else if (contact == 3 || contact == 4) {
+				setPos.x = pPos.x;
+			}
+
+
+			sPoleBlock.SetPos(setPos);
+			sPoleBlock.SetMove(0);
+
+			//自機の挙動
+			
+			//if (contact == 1) {
+			//	ColZ.y = 1;
+			//}
+			//else if (contact == 2) {
+			//	ColZ.x = 1;
+			//}
+			//else if (contact == 3) {
+			//	ColX.y = 1;
+			//}
+			//else if (contact == 4) {
+			//	ColX.x = 1;
+			//}
+
+		}
+		else {
+			sPoleBlock.SetMove(1);
+		}
+
+	}
+	else {
+		sPoleBlock.SetMove(1);
+	}
+
+	//自機とNブロック
+
+	if (pPosX1 < nPosX2 && nPosX1 < pPosX2) {
+
+		if (pPosZ1 < nPosZ2 && nPosZ1 < pPosZ2) {
+
+			debugText_->Printf("PN");
+
+			//Nブロックの挙動
+
+			if (pPos.x > nPos.x) {
+				contact = 1;
+				contactNumX = pPos.x - nPos.x;
+			}
+			else {
+				contact = 2;
+				contactNumX = nPos.x - pPos.x;
+			}
+
+			if (pPos.z > nPos.z) {
+				contactNumZ = pPos.z - nPos.z;
+			}
+			else {
+				contactNumZ = nPos.z - pPos.z;
+			}
+
+			if (contactNumX < contactNumZ) {
+
+				if (nPos.z > nPos.z) {
+					contact = 4;
+				}
+				else {
+					contact = 3;
+				}
+
+			}
+
+			//座標を調節
+
+			setPos = nPoleBlock.GetPos();
+
+			if (contact == 1 || contact == 2) {
+				setPos.z = pPos.z;
+			}
+			else if (contact == 3 || contact == 4) {
+				setPos.x = pPos.x;
+			}
+
+
+			nPoleBlock.SetPos(setPos);
+			nPoleBlock.SetMove(0);
+
+		}
+		else {
+			nPoleBlock.SetMove(1);
+		}
+
+	}
+	else {
+		nPoleBlock.SetMove(1);
+	}
+
+
+	//SブロックとNブロック
+
+	if (sPosX1 < nPosX2 && nPosX1 < sPosX2) {
+
+		if (sPosZ1 < nPosZ2 && nPosZ1 < sPosZ2) {
+
+			debugText_->Printf("NS");
+
+		}
+
+	}
+
+}
+
