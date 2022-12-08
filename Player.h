@@ -52,6 +52,7 @@ class Player
 	float GetSize() { return size; }
 	Vector3 GetMove() { return move; }
 	float GetSpeed() { return playerSpd; }
+	bool GetState()const { return state; }
 
 	//セッター
 	void SetColX(Vector2 colX) { this->colX = colX; }

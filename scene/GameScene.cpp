@@ -56,16 +56,16 @@ void GameScene::Initialize() {
 	Vector3 nBlockPos{ 5,2,5 };
 	Vector3 sBlockPos{ 5,2,15 };
 
-	nPoleBlock.Initialize(nBlockPos,true);
-	sPoleBlock.Initialize(sBlockPos,false);
+	nPoleBlock.Initialize(nBlockPos, true);
+	sPoleBlock.Initialize(sBlockPos, false);
 
 }
 
 void GameScene::Update() {
 	player->Update();
 
-	nPoleBlock.Update(player->GetPosition(),4.0f);
-	sPoleBlock.Update(player->GetPosition(), 4.0f);
+	nPoleBlock.Update(player->GetPosition(), player->GetState(), 4.0f);
+	sPoleBlock.Update(player->GetPosition(), player->GetState(), 4.0f);
 
 	MapCollision();
 }

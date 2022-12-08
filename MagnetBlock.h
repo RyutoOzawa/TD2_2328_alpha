@@ -16,7 +16,7 @@ public:
 	/// <param name="pos"></param>
 	void Initialize(const Vector3& pos,bool isNorth_);
 
-	void Update(const Vector3& playerPos,float moveDistance);
+	void Update(const Vector3& playerPos,int playerState,float moveDistance);
 
 	void Draw(const ViewProjection& viewProjection, const uint32_t& nPoleTexture, const uint32_t& sPoleTexture);
 
