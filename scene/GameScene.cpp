@@ -19,7 +19,18 @@ void GameScene::Initialize() {
 
 	camera1.Initialize();
 
+	camera1.eye = Vector3(0, 50, -1);
+	camera1.target = Vector3(0, 0, 0);
+
+	camera1.UpdateMatrix();
+
+
 	model = Model::Create();
+
+	player = new Player();
+	player->Initialize();
+
+	player->Update();
 
 	//マップ用画像
 	textureHandleGround = TextureManager::Load("ground.png");
@@ -49,10 +60,10 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
-	camera1.eye = { 0,100,-10 };
-	camera1.target = { 0,0,10 };
+	player->Update();
 
-	camera1.UpdateMatrix();
+	MapCollision();
+
 }
 
 void GameScene::Draw() {
@@ -103,7 +114,7 @@ void GameScene::Draw() {
 	}
 
 	model->Draw(block, camera1);
-
+	player->Draw(camera1);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -123,4 +134,135 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+//判定
+void GameScene::MapCollision()
+{
+	//座標を用意
+	float leftplayer = player->GetPosition().x;
+	float downplayer = player->GetPosition().y;
+	float frontplayer = player->GetPosition().z;
+	float rightplayer = player->GetPosition().x + player->GetSize();
+	float upplayer = player->GetPosition().y - player->GetSize();
+	float backplayer = player->GetPosition().z + player->GetSize();
+
+	//当たっているか
+	Vector2 ColX = { 0,0 };
+	Vector2 ColY = { 0,0 };
+	Vector2 ColZ = { 0,0 };
+
+	float playerSpeed = player->GetSpeed() + 0.01;
+
+	/////////////
+	//プレイヤー//
+	/////////////
+
+	//右に仮想的に移動して当たったら
+	if (savemap_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, backplayer))
+	{
+
+		if (player->GetMove().x > 0) {
+			//１ピクセル先に壁が来るまで移動
+			while ((savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer)))
+			{
+				player->OnMapCollisionX2();
+				rightplayer = player->GetPosition().x + player->GetSize();
+				leftplayer = player->GetPosition().x;
+			}
+			ColX.x = 1;
+		}
+		else {
+			ColX.x = 1;
+		}
+
+	}
+
+
+	//左に仮想的に移動して当たったら
+	if (savemap_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, backplayer))
+	{
+		if (player->GetMove().x < 0) {
+			//１ピクセル先に壁が来るまで移動
+			while ((savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, backplayer)))
+			{
+				player->OnMapCollisionX();
+				rightplayer = player->GetPosition().x + player->GetSize();
+				leftplayer = player->GetPosition().x;
+			}
+			ColX.y = 1;
+		}
+		else {
+			ColX.y = 1;
+		}
+	}
+
+
+	debugText_->Printf("%f", ColX.y);
+
+
+	leftplayer = player->GetPosition().x;
+	rightplayer = player->GetPosition().x + player->GetSize();
+
+	////下(床)に仮想的に移動して当たったら
+	//if (savemap_->mapcol(leftplayer, downplayer, frontplayer + playerSpeed))
+	//{
+	//	//１ピクセル先に壁が来るまで移動
+	//	while ((savemap_->mapcol(leftplayer, downplayer, frontplayer + playerSpeed)))
+	//	{
+	//		player->OnMapCollisionY();
+	//		upplayer = player->GetPosition().y - player->GetSize();
+	//		downplayer = player->GetPosition().y;
+	//	}
+	//}
+
+
+	upplayer = player->GetPosition().y - player->GetSize();
+	downplayer = player->GetPosition().y;
+
+
+	//z軸に対しての当たり判定
+	//奥に仮想的に移動して当たったら
+	if (savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed))
+	{
+		if (player->GetMove().z > 0) {
+			//１ピクセル先に壁が来るまで移動
+			while ((savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, backplayer) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer)))
+			{
+				player->OnMapCollisionZ2();
+				frontplayer = player->GetPosition().z;
+				backplayer = player->GetPosition().z + player->GetSize();
+			}
+			ColZ.x = 1;
+		}
+		else {
+			ColZ.x = 1;
+		}
+
+	}
+
+
+
+	//手前に仮想的に移動して当たったら
+	if (savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed))
+	{
+		if (player->GetMove().z < 0) {
+			//１ピクセル先に壁が来るまで移動
+			while ((savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer)))
+			{
+				player->OnMapCollisionZ();
+				frontplayer = player->GetPosition().z;
+				backplayer = player->GetPosition().z + player->GetSize();
+			}
+			ColZ.y = 1;
+		}
+		else {
+			ColZ.y = 1;
+		}
+	}
+
+
+	player->SetColX(ColX);
+	player->SetColY(ColY);
+	player->SetColZ(ColZ);
+
 }

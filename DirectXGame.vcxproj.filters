@@ -72,6 +72,9 @@
     <ClCompile Include="Matrix.cpp">
       <Filter>ソース ファイル\math</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\ViewProjection.h">
@@ -166,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="Matrix.h">
       <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
