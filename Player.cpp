@@ -103,7 +103,6 @@ void Player::ChangeState()
 {
 	if (input_->TriggerKey(DIK_SPACE)) {
 		state++;
-		//state = SouthPole;
 		if (state > SouthPole) {
 			state = UnMagnet;
 		}

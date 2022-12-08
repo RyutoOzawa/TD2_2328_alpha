@@ -33,7 +33,7 @@ void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDi
 		if (playerState == NorthPole) {
 			isPlayerNorth = true;
 		}
-		else if(playerState == SouthPole) {
+		else if (playerState == SouthPole) {
 			isPlayerNorth = false;
 		}
 		bool isPull;

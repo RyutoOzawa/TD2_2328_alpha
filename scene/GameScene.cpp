@@ -32,8 +32,8 @@ void GameScene::Initialize() {
 	northPoleTexture = TextureManager::Load("red1x1.png");
 	southPoleTexture = TextureManager::Load("blue1x1.png");
 
-	map_->Loding("map/map1.csv");
-	savemap_->Loding("map/map1.csv");
+	map_->Loding("map/map2.csv");
+	savemap_->Loding("map/map2.csv");
 
 	//マップの座標の初期化
 	for (int i = 0; i < blockY; i++)
@@ -53,8 +53,8 @@ void GameScene::Initialize() {
 	}
 
 
-	Vector3 nBlockPos{ 5,2,5 };
-	Vector3 sBlockPos{ 5,2,15 };
+	Vector3 nBlockPos{ 8,2,5 };
+	Vector3 sBlockPos{ 10,2,5 };
 
 	nPoleBlock.Initialize(nBlockPos, true);
 	sPoleBlock.Initialize(sBlockPos, false);
