@@ -68,6 +68,7 @@ void GameScene::Update() {
 	sPoleBlock.Update();
 
 	MapCollision();
+	PosCollision();
 }
 
 void GameScene::Draw() {
@@ -207,7 +208,7 @@ void GameScene::MapCollision()
 	}
 
 
-	debugText_->Printf("%f", ColX.y);
+	//debugText_->Printf("%f", ColX.y);
 
 
 	leftplayer = player->GetPosition().x;
@@ -276,3 +277,81 @@ void GameScene::MapCollision()
 	player->SetColZ(ColZ);
 
 }
+
+void GameScene::PosCollision()
+{
+
+	//nブロック
+
+	Vector3 nPos = nPoleBlock.GetPos();
+	float nSize = 2;
+
+	float nPosX1 = nPos.x - (nSize / 2);
+	float nPosX2 = nPos.x + (nSize / 2);
+
+	float nPosZ1 = nPos.z - (nSize / 2);
+	float nPosZ2 = nPos.z + (nSize / 2);
+
+	//sブロック
+
+	Vector3 sPos = sPoleBlock.GetPos();
+	float sSize = 2;
+
+	float sPosX1 = sPos.x - (sSize / 2);
+	float sPosX2 = sPos.x + (sSize / 2);
+
+	float sPosZ1 = sPos.z - (sSize / 2);
+	float sPosZ2 = sPos.z + (sSize / 2);
+
+	//自機
+
+	Vector3 pPos = player->GetPosition();
+	float pSize = player->GetSize();
+
+	float pPosX1 = pPos.x - (pSize / 2);
+	float pPosX2 = pPos.x + (pSize / 2);
+
+	float pPosZ1 = pPos.z - (pSize / 2);
+	float pPosZ2 = pPos.z + (pSize / 2);
+
+	//向き
+	int pInput;
+
+	//自機とSブロック
+
+	if (pPosX1 < sPosX2 && sPosX1 < pPosX2) {
+
+		if (pPosZ1 < sPosZ2 && sPosZ1 < pPosZ2) {
+
+			debugText_->Printf("PS");
+
+		}
+
+	}
+
+	//自機とNブロック
+
+	if (pPosX1 < nPosX2 && nPosX1 < pPosX2) {
+
+		if (pPosZ1 < nPosZ2 && nPosZ1 < pPosZ2) {
+
+			debugText_->Printf("PN");
+
+		}
+
+	}
+
+	//SブロックとNブロック
+
+	if (sPosX1 < nPosX2 && nPosX1 < sPosX2) {
+
+		if (sPosZ1 < nPosZ2 && nPosZ1 < sPosZ2) {
+
+			debugText_->Printf("NS");
+
+		}
+
+	}
+
+}
+

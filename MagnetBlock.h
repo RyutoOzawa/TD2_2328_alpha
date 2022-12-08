@@ -20,6 +20,8 @@ public:
 
 	void Draw(const ViewProjection& viewProjection, const uint32_t& nPoleTexture, const uint32_t& sPoleTexture);
 
+	Vector3 GetPos() { return pos; };
+
 public:
 
 
