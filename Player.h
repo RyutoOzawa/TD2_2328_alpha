@@ -15,28 +15,28 @@ enum stateIndex {
 class Player
 {
 	/// <summary>
-	/// ƒƒ“ƒoŠÖ”
+	/// ãƒ¡ãƒ³ãƒé–¢æ•°
 	/// </summary>
 
 public:
 
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
 	void Initialize();
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// •`‰æ
+	/// æç”»
 	/// </summary>
 	void Draw(const ViewProjection& viewProjection_);
 
 
-	//“–‚½‚è”»’è—p 2‚Íƒ}ƒCƒiƒX
+	//å½“ãŸã‚Šåˆ¤å®šç”¨ 2ã¯ãƒã‚¤ãƒŠã‚¹
 	void OnMapCollision();
 	void OnMapCollisionX();
 	void OnMapCollisionY();
@@ -45,23 +45,27 @@ public:
 	void OnMapCollisionY2();
 	void OnMapCollisionZ2();
 
-	//ƒQƒbƒ^[
+	//ã‚²ãƒƒã‚¿ãƒ¼
 	Vector3 GetTranslation() { return worldTransform.translation_; }
 	Vector3 GetPosition() { return pos; }
 
 	float GetSize() { return size; }
 	Vector3 GetMove() { return move; }
 	float GetSpeed() { return playerSpd; }
+<<<<<<< sano
 	bool GetState()const { return state; }
+=======
+	int GetState()const { return state; }
+>>>>>>> master
 
-	//ƒZƒbƒ^[
+	//ã‚»ãƒƒã‚¿ãƒ¼
 	void SetColX(Vector2 colX) { this->colX = colX; }
 	void SetColY(Vector2 colY) { this->colY = colY; }
 	void SetColZ(Vector2 colZ) { this->colZ = colZ; }
 
 
 	/// <summary>
-	/// ƒƒ“ƒo•Ï”
+	/// ãƒ¡ãƒ³ãƒå¤‰æ•°
 	/// </summary>
 public:
 
@@ -81,9 +85,15 @@ public:
 	Vector2 colZ = {};
 
 
+<<<<<<< sano
 	/// <summary>
-	/// ƒƒ“ƒoŠÖ”‚Åg‚¤‚æ‚¤‚ÌŠÖ”
+	/// ãƒ¡ãƒ³ãƒé–¢æ•°ã§ä½¿ã†ã‚ˆã†ã®é–¢æ•°
 	/// </summary>
+=======
+/// <summary>
+/// ãƒ¡ãƒ³ãƒé–¢æ•°ã§ä½¿ã†ã‚ˆã†ã®é–¢æ•°
+/// </summary>
+>>>>>>> master
 private:
 	void Move();
 
@@ -93,7 +103,7 @@ private:
 	~Player();
 
 	/// <summary>
-	/// ŠO•”‚ÅQÆ‚Å‚«‚È‚¢ƒƒ“ƒo•Ï”
+	/// å¤–éƒ¨ã§å‚ç…§ã§ããªã„ãƒ¡ãƒ³ãƒå¤‰æ•°
 	/// </summary>
 private:
 	Input* input_ = nullptr;
