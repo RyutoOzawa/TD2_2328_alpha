@@ -59,6 +59,14 @@ void GameScene::Initialize() {
 	nPoleBlock.Initialize(nBlockPos, true);
 	sPoleBlock.Initialize(sBlockPos, false);
 
+	//ゲームで使うようの配列に格納
+	magnetBlocks.push_back(nPoleBlock);
+	magnetBlocks.push_back(sPoleBlock);
+	MagnetBlock newBlock;
+	newBlock.Initialize(Vector3(6, 2, 9), true);
+	magnetBlocks.push_back(newBlock);
+
+
 }
 
 void GameScene::Update() {
@@ -109,8 +117,9 @@ void GameScene::Draw() {
 	player->Draw(camera1);
 
 	//磁石描画
-	nPoleBlock.Draw(camera1, northPoleTexture, southPoleTexture);
-	sPoleBlock.Draw(camera1, northPoleTexture, southPoleTexture);
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+		magnetBlocks[i].Draw(camera1, northPoleTexture, southPoleTexture);
+	}
 
 	//マップの描画
 	for (int i = 0; i < blockY; i++)

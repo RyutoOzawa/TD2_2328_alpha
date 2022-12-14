@@ -14,6 +14,7 @@
 #include "Map.h"
 #include "Matrix.h"
 #include"MagnetBlock.h"
+#include<vector>
 
 /// <summary>
 /// ゲームシーン
@@ -86,6 +87,9 @@ class GameScene {
 
 	MagnetBlock nPoleBlock;
 	MagnetBlock sPoleBlock;
+
+	std::vector<MagnetBlock> magnetBlocks;
+
 
 	//当たっているか
 	Vector2 ColX = { 0,0 };
