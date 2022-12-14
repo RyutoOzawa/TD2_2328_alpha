@@ -26,6 +26,10 @@ public:
 	void SetMove(int i) { this->move = i; }
 	Vector3 GetMoveVec() { return moveVec; }
 
+	bool GetIsNorth() const { return isNorth; }
+
+	float GetMoveSpd()const { return moveSpd; }
+
 public:
 
 

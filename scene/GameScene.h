@@ -54,6 +54,9 @@ class GameScene {
 	//座標参照
 	void PosCollision();
 
+	//磁石同士の引き寄せ、引き離しの更新処理
+	void MagnetsUpdate();
+
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
