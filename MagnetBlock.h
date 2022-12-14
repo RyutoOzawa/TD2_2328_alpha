@@ -24,6 +24,7 @@ public:
 	void SetPos(Vector3 pos) { this->pos = pos; };
 
 	void SetMove(int i) { this->move = i; }
+	Vector3 GetMoveVec() { return moveVec; }
 
 public:
 
@@ -34,6 +35,7 @@ private:
 	WorldTransform worldTransform;
 	Vector3 pos{};
 	uint32_t textureHandle = 0;
+	Vector3 moveVec;
 
 	bool isNorth = false;
 	float moveSpd = 0.025f;
