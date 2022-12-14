@@ -20,6 +20,7 @@ void MagnetBlock::Initialize(const Vector3& pos, bool isNorth_)
 
 	//引数で受け取った座標を反映
 	worldTransform.translation_ = pos;
+	worldTransform.scale_ = Vector3(0.99f,0.99f,0.99f);
 	worldTransformUpdate(&worldTransform);
 
 	isNorth = isNorth_;
@@ -57,7 +58,7 @@ void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDi
 			if (isPull) {
 
 				if (vecLength <= moveDistance) {
-					Vector3 moveVec;
+					/*Vector3 moveVec;*/
 					moveVec = Vector3Normalize(vecPlayerToblock);
 					moveVec *= moveSpd;
 					pos.x += moveVec.x;
@@ -68,7 +69,7 @@ void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDi
 			else {
 
 				if (vecLength <= moveDistance) {
-					Vector3 moveVec;
+					/*Vector3 moveVec;*/
 					moveVec = Vector3Normalize(vecPlayerToblock);
 					moveVec *= moveSpd;
 					pos.x -= moveVec.x;
@@ -83,7 +84,7 @@ void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDi
 	//座標を反映
 	worldTransform.translation_ = pos;
 	worldTransformUpdate(&worldTransform);
-
+	//moveVec = { 0.0f,0.0f,0.0f };
 }
 
 void MagnetBlock::Draw(const ViewProjection& viewProjection, const uint32_t& nPoleTexture, const uint32_t& sPoleTexture)

@@ -74,9 +74,9 @@ void GameScene::Update() {
 	sPoleBlock.Update(player->GetPosition(), player->GetState(), 4.0f);
 
 	MapCollision();
-	if (player->GetState() != UnMagnet) {
-		PosCollision();
-	}
+
+	PosCollision();
+
 }
 
 void GameScene::Draw() {
@@ -161,16 +161,16 @@ void GameScene::MapCollision()
 	//当たらないよう調整する用
 	float adjustPixcelSpeed = player->GetAdjustPixcelSpeed();
 	//自機サイズ調整用
-	float playerSizeAdjust = 0.03;
+	float adjustPlayerSize = 0.03;
 
 	//座標を用意
-	float leftplayer = player->GetPosition().x + playerSizeAdjust;
-	float downplayer = player->GetPosition().y + playerSizeAdjust;
-	float frontplayer = player->GetPosition().z + playerSizeAdjust;
+	float leftplayer = player->GetPosition().x + adjustPlayerSize;
+	float downplayer = player->GetPosition().y + adjustPlayerSize;
+	float frontplayer = player->GetPosition().z + adjustPlayerSize;
 
-	float rightplayer = player->GetPosition().x + player->GetSize() - playerSizeAdjust;
-	float upplayer = player->GetPosition().y - player->GetSize() - playerSizeAdjust;
-	float backplayer = player->GetPosition().z + player->GetSize() - playerSizeAdjust;
+	float rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
+	float upplayer = player->GetPosition().y - player->GetSize() - adjustPlayerSize;
+	float backplayer = player->GetPosition().z + player->GetSize() - adjustPlayerSize;
 
 	//当たっているか
 	//Vector2 ColX = { 0,0 };
@@ -196,8 +196,8 @@ void GameScene::MapCollision()
 				}
 
 				player->OnMapCollisionX2();
-				rightplayer = player->GetPosition().x + player->GetSize() - playerSizeAdjust;
-				leftplayer = player->GetPosition().x + playerSizeAdjust;
+				rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
+				leftplayer = player->GetPosition().x + adjustPlayerSize;
 
 			}
 
@@ -209,8 +209,8 @@ void GameScene::MapCollision()
 		ColX.x = 0;
 	}
 
-	debugText_->SetPos(0,0);
-	debugText_->Printf("RIGHT = %f",ColX.x);
+	//debugText_->SetPos(0,0);
+	//debugText_->Printf("RIGHT = %f",ColX.x);
 
 	//左に仮想的に移動して当たったら
 	if (savemap_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, backplayer))
@@ -224,8 +224,8 @@ void GameScene::MapCollision()
 				}
 
 				player->OnMapCollisionX();
-				rightplayer = player->GetPosition().x + player->GetSize() - playerSizeAdjust;
-				leftplayer = player->GetPosition().x + playerSizeAdjust;
+				rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
+				leftplayer = player->GetPosition().x + adjustPlayerSize;
 			}
 
 			ColX.y = 1;
@@ -238,8 +238,8 @@ void GameScene::MapCollision()
 	}
 
 
-	debugText_->SetPos(0, 20);
-	debugText_->Printf("LEFT  = %f", ColX.y);
+	//debugText_->SetPos(0, 20);
+	//debugText_->Printf("LEFT  = %f", ColX.y);
 
 	//leftplayer = player->GetPosition().x + adjust;
 	//rightplayer = player->GetPosition().x + player->GetSize() - adjust;
@@ -261,8 +261,8 @@ void GameScene::MapCollision()
 				}
 
 				player->OnMapCollisionZ2();
-				frontplayer = player->GetPosition().z + playerSizeAdjust;
-				backplayer = player->GetPosition().z + player->GetSize() - playerSizeAdjust;
+				frontplayer = player->GetPosition().z + adjustPlayerSize;
+				backplayer = player->GetPosition().z + player->GetSize() - adjustPlayerSize;
 			}
 
 			ColZ.x = 1;
@@ -274,8 +274,8 @@ void GameScene::MapCollision()
 	}
 
 
-	debugText_->SetPos(0, 40);
-	debugText_->Printf("UP    = %f", ColZ.x);
+	//debugText_->SetPos(0, 40);
+	//debugText_->Printf("UP    = %f", ColZ.x);
 
 	//手前に仮想的に移動して当たったら
 	if (savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed))
@@ -289,8 +289,8 @@ void GameScene::MapCollision()
 				}
 
 				player->OnMapCollisionZ();
-				frontplayer = player->GetPosition().z + playerSizeAdjust;
-				backplayer = player->GetPosition().z + player->GetSize() - playerSizeAdjust;
+				frontplayer = player->GetPosition().z + adjustPlayerSize;
+				backplayer = player->GetPosition().z + player->GetSize() - adjustPlayerSize;
 			}
 
 			ColZ.y = 1;
@@ -302,8 +302,8 @@ void GameScene::MapCollision()
 	}
 
 
-	debugText_->SetPos(0, 60);
-	debugText_->Printf("DOWN  = %f", ColZ.y);
+	//debugText_->SetPos(0, 60);
+	//debugText_->Printf("DOWN  = %f", ColZ.y);
 
 	//if (ColX.x == 1) {
 
@@ -360,6 +360,7 @@ void GameScene::PosCollision()
 
 	Vector3 pPos = player->GetPosition();
 	float pSize = player->GetSize();
+	int pState = player->GetState();
 
 	float pPosX1 = pPos.x - (pSize / 2);
 	float pPosX2 = pPos.x + (pSize / 2);
@@ -370,12 +371,20 @@ void GameScene::PosCollision()
 	//向き
 	int pInput;
 
+	//プレイヤーと何かしら触れているか
+	int playerContact = 0;
+
 	//0なし 1上　2下　3左　4右
 	int contact = 0;
-	int contactNumX = 0;
-	int contactNumZ = 0;
+	float contactNumX = 0;
+	float contactNumZ = 0;
 
 	Vector3 setPos = {};
+
+	//プレイヤーにどちらが近いか
+	int nearPlayer = 0;
+	float nearPlayerSize0 = 0.0f;
+	float nearPlayerSize1 = 0.0f;
 
 	//自機とSブロック
 
@@ -387,72 +396,105 @@ void GameScene::PosCollision()
 
 			//Sブロックの挙動
 
+
+			//どの面に一番近いか
 			if (pPos.x > sPos.x) {
-				contact = 1;
+				contact = 3;
 				contactNumX = pPos.x - sPos.x;
 			}
 			else {
-				contact = 2;
+				contact = 4;
 				contactNumX = sPos.x - pPos.x;
 			}
 
 			if (pPos.z > sPos.z) {
-				contactNumZ = pPos.z - sPos.z;
+				contactNumZ = pPos.z - sPos.z + 0.05;
 			}
 			else {
-				contactNumZ = sPos.z - pPos.z;
+				contactNumZ = sPos.z - pPos.z + 0.05;
 			}
 
 			if (contactNumX < contactNumZ) {
 
 				if (pPos.z > sPos.z) {
-					contact = 4;
+					contact = 2;
 				}
 				else {
-					contact = 3;
+					contact = 1;
 				}
 
 			}
 
 			//座標を調節
 
-			setPos = sPoleBlock.GetPos();
+			if (pState == NorthPole) {
 
-			if (contact == 1 || contact == 2) {
-				setPos.z = pPos.z;
+				//自機に隣り合うように
+				setPos = sPoleBlock.GetPos();
+
+				if (contact == 3 || contact == 4) {
+					setPos.z = pPos.z;
+				}
+				else if (contact == 1 || contact == 2) {
+					setPos.x = pPos.x;
+				}
+
+				float playerSpeed = player->GetSpeed();
+				Vector3 playerMove = player->GetMove();
+
+				if (playerMove.x > 0) {
+					setPos.x += playerSpeed;
+				}
+				else if (playerMove.x < 0) {
+					setPos.x -= playerSpeed;
+				}
+
+				if (playerMove.z > 0) {
+					setPos.z += playerSpeed;
+				}
+				else if (playerMove.z < 0) {
+					setPos.z -= playerSpeed;
+				}
+
+				sPoleBlock.SetPos(setPos);
+				sPoleBlock.SetMove(0);
 			}
-			else if (contact == 3 || contact == 4) {
-				setPos.x = pPos.x;
-			}
-
-
-			sPoleBlock.SetPos(setPos);
-			sPoleBlock.SetMove(0);
 
 			//自機の挙動
 
-			if (contact == 1) {
+			if (pState != NorthPole) {
 
+				if (contact == 1) {
+					ColZ.x = 1;
+				}
+				else if (contact == 2) {
+					ColZ.y = 1;
+				}
+				else if (contact == 3) {
+					ColX.y = 1;
+				}
+				else if (contact == 4) {
+					ColX.x = 1;
+				}
 			}
-			else if (contact == 2) {
 
-			}
-			else if (contact == 3) {
 
-			}
-			else if (contact == 4) {
-
-			}
+			playerContact = 1;
 
 		}
 		else {
 			sPoleBlock.SetMove(1);
+
 		}
 
 	}
 	else {
 		sPoleBlock.SetMove(1);
+
 	}
+
+	//debugText_->SetPos(0, 0);
+	//debugText_->Printf("1U 2D 3L 4R  = %d", contact);
 
 	//自機とNブロック
 
@@ -460,62 +502,105 @@ void GameScene::PosCollision()
 
 		if (pPosZ1 < nPosZ2 && nPosZ1 < pPosZ2) {
 
-			debugText_->Printf("PN");
+			debugText_->Printf("PS");
 
-			//Nブロックの挙動
+			//Sブロックの挙動
 
+
+			//どの面に一番近いか
 			if (pPos.x > nPos.x) {
-				contact = 1;
+				contact = 3;
 				contactNumX = pPos.x - nPos.x;
 			}
 			else {
-				contact = 2;
+				contact = 4;
 				contactNumX = nPos.x - pPos.x;
 			}
 
 			if (pPos.z > nPos.z) {
-				contactNumZ = pPos.z - nPos.z;
+				contactNumZ = pPos.z - nPos.z + 0.05;
 			}
 			else {
-				contactNumZ = nPos.z - pPos.z;
+				contactNumZ = nPos.z - pPos.z + 0.05;
 			}
 
 			if (contactNumX < contactNumZ) {
 
-				if (nPos.z > nPos.z) {
-					contact = 4;
+				if (pPos.z > nPos.z) {
+					contact = 2;
 				}
 				else {
-					contact = 3;
+					contact = 1;
 				}
 
 			}
 
 			//座標を調節
 
-			setPos = nPoleBlock.GetPos();
+			if (pState == SouthPole) {
 
-			if (contact == 1 || contact == 2) {
-				setPos.z = pPos.z;
+				//自機に隣り合うように
+				setPos = nPoleBlock.GetPos();
+
+				if (contact == 3 || contact == 4) {
+					setPos.z = pPos.z;
+				}
+				else if (contact == 1 || contact == 2) {
+					setPos.x = pPos.x;
+				}
+
+				float playerSpeed = player->GetSpeed();
+				Vector3 playerMove = player->GetMove();
+
+				if (playerMove.x > 0) {
+					setPos.x += playerSpeed;
+				}
+				else if (playerMove.x < 0) {
+					setPos.x -= playerSpeed;
+				}
+
+				if (playerMove.z > 0) {
+					setPos.z += playerSpeed;
+				}
+				else if (playerMove.z < 0) {
+					setPos.z -= playerSpeed;
+				}
+
+				nPoleBlock.SetPos(setPos);
+				nPoleBlock.SetMove(0);
 			}
-			else if (contact == 3 || contact == 4) {
-				setPos.x = pPos.x;
+
+			//自機の挙動
+
+			if (pState != SouthPole) {
+
+				if (contact == 1) {
+					ColZ.x = 1;
+				}
+				else if (contact == 2) {
+					ColZ.y = 1;
+				}
+				else if (contact == 3) {
+					ColX.y = 1;
+				}
+				else if (contact == 4) {
+					ColX.x = 1;
+				}
 			}
 
-
-			nPoleBlock.SetPos(setPos);
-			nPoleBlock.SetMove(0);
+			playerContact = 1;
 
 		}
 		else {
 			nPoleBlock.SetMove(1);
+
 		}
 
 	}
 	else {
 		nPoleBlock.SetMove(1);
-	}
 
+	}
 
 	//SブロックとNブロック
 
@@ -523,11 +608,168 @@ void GameScene::PosCollision()
 
 		if (sPosZ1 < nPosZ2 && nPosZ1 < sPosZ2) {
 
-			debugText_->Printf("NS");
+	/*		debugText_->Printf("NS");*/
+
+			//どの面に一番近いか(触れてるか)
+			if (nPos.x > sPos.x) {
+				contact = 3;
+				contactNumX = nPos.x - sPos.x;
+			}
+			else {
+				contact = 4;
+				contactNumX = sPos.x - nPos.x;
+			}
+
+			if (nPos.z > sPos.z) {
+				contactNumZ = nPos.z - sPos.z + 0.025;
+			}
+			else {
+				contactNumZ = sPos.z - nPos.z + 0.025;
+			}
+
+			if (contactNumX < contactNumZ) {
+
+				if (nPos.z > sPos.z) {
+					contact = 2;
+				}
+				else {
+					contact = 1;
+				}
+
+			}
+
+			//どちらのほうが自機に近いかベクトルを使って計算
+
+			int A1 = sPos.x;
+			int A2 = sPos.z;
+
+			int B1 = nPos.x;
+			int B2 = nPos.z;
+
+			int P1 = pPos.x;
+			int P2 = pPos.z;
+
+			//sPos
+			nearPlayerSize0 = sqrt(((P1 - A1) * (P1 - A1)) + ((P2 - A2) * (P2 - A2)));
+			//nPos
+			nearPlayerSize1 = sqrt(((P1 - B1) * (P1 - B1)) + ((P2 - B2) * (P2 - B2)));
+
+			if (nearPlayerSize0 < nearPlayerSize1) {
+				//sPosのほうが近い
+				nearPlayer = 0;
+
+
+				//if (nearPlayerSize1 - nearPlayerSize0 < 2) {
+				//	nearPlayer = 2;
+				//}
+			
+			}
+			else {
+				//nPosのほうが近い
+				nearPlayer = 1;
+
+				//if (nearPlayerSize0 - nearPlayerSize1< 2) {
+				//	nearPlayer = 2;
+				//}
+
+			}
+
+			//座標を調節
+
+			//自機近いほうのブロックに隣り合うように
+
+
+			if (nearPlayer == 0) {
+
+				setPos = nPoleBlock.GetPos();
+
+				if (contact == 3 || contact == 4) {
+					setPos.z = sPos.z;
+				}
+				else if (contact == 1 || contact == 2) {
+					setPos.x = sPos.x;
+
+				}
+
+			}
+			else {
+
+				setPos = sPoleBlock.GetPos();
+
+				if (contact == 3 || contact == 4) {
+					setPos.z = nPos.z;
+				}
+				else if (contact == 1 || contact == 2) {
+					setPos.x = nPos.x;
+				}
+
+			}
+
+			//移動を追加
+
+			float playerSpeed = player->GetSpeed();
+			Vector3 playerMove = player->GetMove();
+
+			Vector3 magnetMoveVec = nPoleBlock.GetMoveVec();
+
+
+			if (playerContact == 0) {
+
+				if (contact == 1 || contact == 2) {
+					setPos.z -= magnetMoveVec.z;
+				}
+				else if (contact == 3 || contact == 4) {
+					setPos.x -= magnetMoveVec.x;
+				}
+
+			}
+			else {
+
+				if (playerMove.x > 0) {
+					setPos.x += playerSpeed;
+				}
+				else if (playerMove.x < 0) {
+					setPos.x -= playerSpeed;
+				}
+
+				if (playerMove.z > 0) {
+					setPos.z += playerSpeed;
+				}
+				else if (playerMove.z < 0) {
+					setPos.z -= playerSpeed;
+				}
+
+			}
+
+
+			if (nearPlayer == 0) {
+				nPoleBlock.SetPos(setPos);
+				nPoleBlock.SetMove(0);
+			}
+			else {
+				sPoleBlock.SetPos(setPos);
+				sPoleBlock.SetMove(0);
+			}
 
 		}
 
 	}
+
+	debugText_->SetPos(0, 0);
+	debugText_->Printf("S = 0 N = 1  = %d", nearPlayer);
+
+	debugText_->SetPos(0, 20);
+	debugText_->Printf("S  = %f", nearPlayerSize0);
+
+	debugText_->SetPos(0, 40);
+	debugText_->Printf("N  = %f", nearPlayerSize1);
+
+	debugText_->SetPos(0, 60);
+	debugText_->Printf("contact  = %d", contact);
+
+	player->SetColX(ColX);
+	player->SetColY(ColY);
+	player->SetColZ(ColZ);
 
 }
 
