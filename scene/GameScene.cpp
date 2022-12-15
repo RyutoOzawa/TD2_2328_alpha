@@ -608,9 +608,6 @@ void GameScene::PosCollision()
 
 		if (sPosZ1 < nPosZ2 && nPosZ1 < sPosZ2) {
 
-	/*		debugText_->Printf("NS");*/
-
-			//どの面に一番近いか(触れてるか)
 			if (nPos.x > sPos.x) {
 				contact = 3;
 				contactNumX = nPos.x - sPos.x;
