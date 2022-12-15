@@ -5,6 +5,12 @@
 #include"MathUtility.h"
 #include"ViewProjection.h"
 
+struct MagnetData
+{
+	Vector3 pos;
+	bool isNorth_;
+};
+
 class MagnetBlock
 {
 public:
@@ -14,7 +20,7 @@ public:
 	/// ‰Šú‰»
 	/// </summary>
 	/// <param name="pos"></param>
-	void Initialize(const Vector3& pos, bool isNorth_);
+	void Initialize(MagnetData magnetData);
 
 	void Update(const Vector3& playerPos, int playerState, float moveDistance);
 
@@ -29,6 +35,7 @@ public:
 	bool GetIsNorth() const { return isNorth; }
 
 	float GetMoveSpd()const { return moveSpd; }
+
 
 public:
 
@@ -45,4 +52,5 @@ private:
 	float moveSpd = 0.025f;
 
 	bool move = 1;
+
 };

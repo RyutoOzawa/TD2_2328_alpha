@@ -7,7 +7,7 @@ MagnetBlock::~MagnetBlock()
 {
 }
 
-void MagnetBlock::Initialize(const Vector3& pos, bool isNorth_)
+void MagnetBlock::Initialize(MagnetData magnetData)
 {
 	//デバッグテキストなど、汎用機能のインスタンス取得
 	debugText = DebugText::GetInstance();
@@ -16,14 +16,14 @@ void MagnetBlock::Initialize(const Vector3& pos, bool isNorth_)
 
 	worldTransform.Initialize();
 
-	this->pos = pos;
+	this->pos = magnetData.pos;
 
 	//引数で受け取った座標を反映
 	worldTransform.translation_ = pos;
 	worldTransform.scale_ = Vector3(0.99f,0.99f,0.99f);
 	worldTransformUpdate(&worldTransform);
 
-	isNorth = isNorth_;
+	isNorth = magnetData.isNorth_;
 }
 
 void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDistance)

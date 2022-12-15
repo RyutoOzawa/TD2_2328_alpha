@@ -88,10 +88,8 @@ class GameScene {
 	uint32_t northPoleTexture = 0;
 	uint32_t southPoleTexture = 0;
 
-	MagnetBlock nPoleBlock;
-	MagnetBlock sPoleBlock;
-
 	std::vector<MagnetBlock> magnetBlocks;
+	std::vector<MagnetData> magnetDatas;
 
 
 	//当たっているか
