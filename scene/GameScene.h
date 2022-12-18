@@ -57,6 +57,8 @@ class GameScene {
 	//磁石同士の引き寄せ、引き離しの更新処理
 	void MagnetsUpdate();
 
+	//mainPos のどの面がsubPosにあったっか
+	int GetContact(Vector3 mainPos,Vector3 subPos);
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -88,11 +90,10 @@ class GameScene {
 	uint32_t northPoleTexture = 0;
 	uint32_t southPoleTexture = 0;
 
-	MagnetBlock nPoleBlock;
-	MagnetBlock sPoleBlock;
-
 	std::vector<MagnetBlock> magnetBlocks;
+	std::vector<MagnetData> magnetDatas;
 
+	Vector3 vecMagToMag;
 
 	//当たっているか
 	Vector2 ColX = { 0,0 };
