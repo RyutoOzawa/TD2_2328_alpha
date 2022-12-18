@@ -24,12 +24,17 @@ void MagnetBlock::Initialize(MagnetData magnetData)
 	worldTransformUpdate(&worldTransform);
 
 	isNorth = magnetData.isNorth_;
+
+	for (int i = 0; i < MagMax; i++) {
+		isMagMove[i]  = true;
+	}
 }
 
 void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDistance)
 {
 
-	if (move == 1) {
+	if (isMove) {
+
 		//自機の状態が磁石なら引き寄せ等の処理を行う
 		if (playerState != UnMagnet) {
 			bool isPlayerNorth = false;
@@ -84,7 +89,7 @@ void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDi
 	//座標を反映
 	worldTransform.translation_ = pos;
 	worldTransformUpdate(&worldTransform);
-	//moveVec = { 0.0f,0.0f,0.0f };
+	//moveVec = { 0.0f,0.0f,0.0f };z
 }
 
 void MagnetBlock::Draw(const ViewProjection& viewProjection, const uint32_t& nPoleTexture, const uint32_t& sPoleTexture)
