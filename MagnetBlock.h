@@ -29,27 +29,33 @@ public:
 	Vector3 GetPos() { return pos; };
 	void SetPos(Vector3 pos) { this->pos = pos; };
 
+	//自機との磁力ON,OFF
 	void SetIsMove(bool isMove) { this->isMove = isMove; }
 	bool GetIsMove() { return isMove; }
 
-	//第一引数に磁力のON,OFF 第二引数に変更するブロックの番号
+	//磁石との磁力 第一引数に磁力のON,OFF 第二引数に変更するブロックの番号
 	void SetIsMagMove(int isMagMove,int i) { this->isMagMove[i] = isMagMove; }
-
 	bool GetIsMagMove(int i) { return isMagMove[i]; }
 
+	//N極かS極か
 	bool GetIsNorth() const { return isNorth; }
 
+	//移動するスピード
 	float GetMoveSpd()const { return moveSpd; }
 
+	//磁石とくっついているか
 	bool GetIsStick() { return isStick; }
 	void SetIsStick(bool isStick) { this->isStick = isStick; }
 
-	int GetIsStickContact() { return stickContact; }
-	void SetIsStickContact(int stickContact) { this->stickContact = stickContact; }
+	//どの面とくっついているか　引数のnumはくっついている磁石の番号
+	int GetIsStickContact(int num) { return stickContact[num]; }
+	void SetIsStickContact(int num,int stickContact) { this->stickContact[num] = stickContact; }
 
+	//どのブロックとくっついているか
 	int GetIsStickBlockNum() { return stickBlockNum; }
 	void SetIsStickBlockNum(int stickBlockNum) { this->stickBlockNum = stickBlockNum; }
 
+	//プレイヤーとくっついているか
 	bool GetIsStickPlayer() { return isStickPlayer; }
 	void SetIsStickPlayer(bool isStickPlayer) { this->isStickPlayer = isStickPlayer; }
 
@@ -80,7 +86,8 @@ private:
 	//他の磁石とくっついたか
 	bool isStick = false;	
 	//どの面がくっついたか
-	int stickContact;
+	int stickContact[MagMax];
+
 	//何番とくっついたか
 	int stickBlockNum;
 

@@ -447,7 +447,7 @@ void GameScene::PosCollision()
 						magnetBlocks[i].SetIsMove(0);
 
 						magnetBlocks[i].SetIsStickPlayer(true);
-						magnetBlocks[i].SetIsStickContact(contact);
+						magnetBlocks[i].SetIsStickContact(i,contact);
 					}
 					else {
 
@@ -483,7 +483,7 @@ void GameScene::PosCollision()
 						magnetBlocks[i].SetIsMove(0);
 
 						magnetBlocks[i].SetIsStickPlayer(true);
-						magnetBlocks[i].SetIsStickContact(contact);
+						magnetBlocks[i].SetIsStickContact(i,contact);
 					}
 					else{
 
@@ -544,7 +544,7 @@ void GameScene::PosCollision()
 			if (isDiffMag) {
 
 				Vector3 setPos = magnetBlocks[i].GetPos();
-				contact = magnetBlocks[i].GetIsStickContact();
+				contact = magnetBlocks[i].GetIsStickContact(i);
 
 				Vector3 stickPos = pPos;
 
@@ -676,15 +676,16 @@ void GameScene::PosCollision()
 							magnetBlocks[i].SetIsStick(true);
 							magnetBlocks[i].SetIsStickBlockNum(j);
 							magnetBlocks[i].SetIsMagMove(0, j);
-							magnetBlocks[i].SetIsStickContact(contact);
+							magnetBlocks[i].SetIsStickContact(j,contact);
 						}
 						else {
 							magnetBlocks[j].SetPos(setPos);
 							magnetBlocks[j].SetIsStick(true);
 							magnetBlocks[j].SetIsStickBlockNum(i);
 							magnetBlocks[j].SetIsMagMove(0, i);
-							magnetBlocks[j].SetIsStickContact(contact);
+							magnetBlocks[j].SetIsStickContact(i,contact);
 						}
+
 
 						////磁石がくっついているに変更
 						//magnetBlocks[i].SetIsStick(true);
@@ -770,9 +771,9 @@ void GameScene::PosCollision()
 		if (magnetBlocks[i].GetIsStick() == true) {
 
 			Vector3 setPos = magnetBlocks[i].GetPos();
-			contact = magnetBlocks[i].GetIsStickContact();
-
 			int stickBlockNum = magnetBlocks[i].GetIsStickBlockNum();
+
+			contact = magnetBlocks[i].GetIsStickContact(stickBlockNum);
 			Vector3 stickPos = magnetBlocks[stickBlockNum].GetPos();
 
 			int blockSize = 2;
