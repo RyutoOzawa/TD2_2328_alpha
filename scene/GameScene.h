@@ -60,6 +60,9 @@ class GameScene {
 	//mainPos のどの面がsubPosにあったっか
 	int GetContact(Vector3 mainPos,Vector3 subPos);
 
+	//どちらの方がプレイヤーに近いか bPos1のほうが近い = 0 ,bPos2のほうが近い = 1
+	bool NearPlayerJudge(Vector3 bPos1, Vector3 bPos2, Vector3 pPos);
+
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -99,6 +102,13 @@ class GameScene {
 	Vector2 ColX = { 0,0 };
 	Vector2 ColY = { 0,0 };
 	Vector2 ColZ = { 0,0 };
+
+	//くっついているブロックの番号
+	bool stickBlockMass[20];
+
+	//くっついているブロックの中でどれが1番プレイヤーに近いか
+	int mostNearPlayerBlock = 0;
+	bool mostNear;
 
 	/// <summary>
 	/// ゲームシーン用

@@ -18,7 +18,7 @@ const int blockX = 10;
 const int blockY = 2;
 const int blockZ = 10;
 
-enum mapdate
+enum mapdata
 {
 	BLUNK,
 	BLOCK,
