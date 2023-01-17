@@ -98,7 +98,7 @@ class GameScene {
 
 	Vector3 vecMagToMag;
 
-	//当たっているか
+	//自機当たっているか
 	Vector2 ColX = { 0,0 };
 	Vector2 ColY = { 0,0 };
 	Vector2 ColZ = { 0,0 };
@@ -109,6 +109,12 @@ class GameScene {
 	//くっついているブロックの中でどれが1番プレイヤーに近いか
 	int mostNearPlayerBlock = 0;
 	bool mostNear;
+
+	//周りの4面のみ
+	int mostNearPlayerBlockFour = 0;
+	bool mostNearFour;
+
+	int a;
 
 	/// <summary>
 	/// ゲームシーン用

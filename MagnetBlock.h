@@ -43,17 +43,30 @@ public:
 	//移動するスピード
 	float GetMoveSpd()const { return moveSpd; }
 
-	//磁石とくっついているか
-	bool GetIsStick() { return isStick; }
-	void SetIsStick(bool isStick) { this->isStick = isStick; }
+
+	//磁石とくっついているか 引数は何番とか
+	bool GetIsStick(int num) { return isStick[num]; }
+	//磁石とくっついているか 第一引数に何番とか 第二引数にくっついているか
+	void SetIsStick(int num,bool isStick) { this->isStick[num] = isStick; }
+
 
 	//どの面とくっついているか　引数のnumはくっついている磁石の番号
-	int GetIsStickContact(int num) { return stickContact[num]; }
-	void SetIsStickContact(int num,int stickContact) { this->stickContact[num] = stickContact; }
+	int GetStickContact(int num) { return stickContact[num]; }
+	//どの面とくっついているか  第一引数に何番とか 第二引数にどの面
+	void SetStickContact(int num,int stickContact) { this->stickContact[num] = stickContact; }
 
-	//どのブロックとくっついているか
-	int GetIsStickBlockNum() { return stickBlockNum; }
-	void SetIsStickBlockNum(int stickBlockNum) { this->stickBlockNum = stickBlockNum; }
+
+	//どのブロックとくっついているか 引数はどの面か
+	int GetStickBlockNum(int contact) { return stickBlockNum[contact]; }
+	//どのブロックとくっついているか  第一引数にどの面 第二引数に何番とか
+	void SetStickBlockNum(int contact,int stickBlockNum) { this->stickBlockNum[contact] = stickBlockNum; }
+
+
+	//面がくっついているか　trueがくっついているfalseがくっついていない
+	int GetIsStickContact(int num) { return isStickContact[num]; }
+	//面がくっついているか  第一引数にどの面か 第二引数にくっついているか
+	void SetIsStickContact(int num, bool isStickContact) { this->isStickContact[num] = isStickContact; }
+
 
 	//プレイヤーとくっついているか
 	bool GetIsStickPlayer() { return isStickPlayer; }
@@ -84,11 +97,16 @@ private:
 	bool isStickPlayer = false;
 
 	//他の磁石とくっついたか
-	bool isStick = false;	
+	bool isStick[MagMax] = {};
+
 	//どの面がくっついたか
 	int stickContact[MagMax];
 
-	//何番とくっついたか
-	int stickBlockNum;
+	//何番とくっついたか	//0なし 1上　2下　3左　4右
+	int stickBlockNum[5];
+
+	//くっついたかくっついていないか　(4面)
+	int isStickContact[5];
+
 
 };
