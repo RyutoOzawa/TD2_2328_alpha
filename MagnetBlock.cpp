@@ -93,3 +93,42 @@ bool MagnetBlock::Colision(Vector3 pos1, float pos1Size, Vector3 pos2, float pos
 
 	return false;
 }
+
+void MagnetBlock::OnMapCollision()
+{
+}
+
+void MagnetBlock::OnMapCollisionX()
+{
+	pos.x -= adjustPixcelSpeed;
+
+}
+
+void MagnetBlock::OnMapCollisionY()
+{
+	pos.y -= adjustPixcelSpeed;
+
+}
+
+void MagnetBlock::OnMapCollisionZ()
+{
+	pos.z -= adjustPixcelSpeed;
+
+}
+
+void MagnetBlock::OnMapCollisionX2()
+{
+	pos.x += adjustPixcelSpeed;
+}
+
+void MagnetBlock::OnMapCollisionY2()
+{
+	pos.y += adjustPixcelSpeed;
+
+}
+
+void MagnetBlock::OnMapCollisionZ2()
+{
+	pos.z += adjustPixcelSpeed;
+
+}

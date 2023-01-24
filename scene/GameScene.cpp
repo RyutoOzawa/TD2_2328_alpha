@@ -100,6 +100,9 @@ void GameScene::Update() {
 	//磁石と自機の当たり判定(押し戻し処理)
 	PosCollision();
 
+	//磁力のON,OFF
+	//MagnetPower();
+
 	//座標の更新
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 		//計算した座標を確定
@@ -107,9 +110,7 @@ void GameScene::Update() {
 		magnetBlocks[i].SetPos(setPos[i]);
 
 		debugText_->SetPos(0, 0);
-		//debugText_->Printf("b[%d] b[%d] = (%f,%f,%f)", i, j, adjust.x, adjust.y, adjust.z);
 		debugText_->Printf("setPos[0] = (%f,%f,%f)", setPos[0].x, setPos[0].y, setPos[0].z);
-
 
 		magnetBlocks[i].Update();
 	}
@@ -342,33 +343,176 @@ void GameScene::MapCollision()
 		ColZ.y = 0;
 	}
 
-
-	//debugText_->SetPos(0, 60);
-	//debugText_->Printf("DOWN  = %f", ColZ.y);
-
-	//if (ColX.x == 1) {
-
-	//	if (ColZ.x == 1 && ColZ.y == 1) {
-	//		ColX.x = 0;
-	//	}
-
-	//}
-
-	//if (ColX.y == 1) {
-
-	//	if (ColZ.x == 1) {
-	//		ColX.y = 0;
-	//	}
-
-	//	if (ColZ.y == 1) {
-	//		ColX.y = 0;
-	//	}
-
-	//}
-
 	player->SetColX(ColX);
 	player->SetColY(ColY);
 	player->SetColZ(ColZ);
+
+	//--------磁石-----------
+	// 
+	//当たらないよう調整する用
+	//float adjustPixcelSpeed = player->GetAdjustPixcelSpeed();
+	//自機サイズ調整用
+	float adjustMagSize = 0.03;
+
+
+	float leftmagnet[blockSizeMax];
+	float downmagnet[blockSizeMax];
+	float frontmagnet[blockSizeMax];
+
+	float rightmagnet[blockSizeMax];
+	float upmagnet[blockSizeMax];
+	float backmagnet[blockSizeMax];
+
+	float magnetSpeedX[blockSizeMax];
+	float magnetSpeedZ[blockSizeMax];
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+		
+		//座標を用意
+		leftmagnet[i] = bPos[i].x + adjustMagSize;
+		downmagnet[i] = bPos[i].y + adjustMagSize;
+		frontmagnet[i] = bPos[i].z + adjustMagSize;
+
+		rightmagnet[i] = bPos[i].x + magnetBlocks[i].GetSize() - adjustMagSize;
+		upmagnet[i] = bPos[i].y - magnetBlocks[i].GetSize() - adjustMagSize;
+		backmagnet[i] = bPos[i].z + magnetBlocks[i].GetSize() - adjustMagSize;
+
+		//当たっているか
+		//Vector2 ColX = { 0,0 };
+		//Vector2 ColY = { 0,0 };
+		//Vector2 ColZ = { 0,0 };
+
+		magnetSpeedX[i] = magnetBlocks[i].GetSpeed().x + adjustPixcelSpeed;
+		magnetSpeedZ[i] = magnetBlocks[i].GetSpeed().z + adjustPixcelSpeed;
+
+	}
+
+
+	/////////////
+	////磁石/////
+	/////////////
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		////右に仮想的に移動して当たったら
+		//if (savemap_->mapcol(rightmagnet[i] + magnetSpeedX[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i]) || savemap_->mapcol(rightmagnet[i] + magnetSpeedX[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i]))
+		//{
+
+		//	if (magnetSpeedX[i] > 0 && mColX[i].x == 0) {
+		//		//１ピクセル先に壁が来るまで移動
+		//		while (true)
+		//		{
+		//			if ((savemap_->mapcol(rightmagnet[i] + adjustPixcelSpeed, downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i]) || savemap_->mapcol(rightmagnet[i] + adjustPixcelSpeed, downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i]))) {
+		//				break;
+		//			}
+
+		//			magnetBlocks[i].OnMapCollisionX2();
+		//			rightmagnet[i] = magnetBlocks[i].GetPos().x + magnetBlocks[i].GetSize() - adjustMagSize;
+		//			leftmagnet[i] = magnetBlocks[i].GetPos().x + adjustMagSize;
+
+		//		}
+
+		//		mColX[i].x = 1;
+		//	}
+
+		//}
+		//else {
+		//	mColX[i].x = 0;
+		//}
+
+		////debugText_->SetPos(0,0);
+		////debugText_->Printf("RIGHT = %f",mColX.x);
+
+		////左に仮想的に移動して当たったら
+		//if (savemap_->mapcol(leftmagnet[i] - magnetSpeedX[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i]) || savemap_->mapcol(leftmagnet[i] - magnetSpeedX[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i]))
+		//{
+		//	if (magnetSpeedX[i] < 0 && mColX[i].y == 0) {
+		//		//１ピクセル先に壁が来るまで移動
+		//		while (true)
+		//		{
+		//			if ((savemap_->mapcol(leftmagnet[i] - adjustPixcelSpeed, downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i]) || savemap_->mapcol(leftmagnet[i] - adjustPixcelSpeed, downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i]))) {
+		//				break;
+		//			}
+
+		//			magnetBlocks[i].OnMapCollisionX();
+		//			rightmagnet[i] = magnetBlocks[i].GetPos().x + magnetBlocks[i].GetSize() - adjustMagSize;
+		//			leftmagnet[i] = magnetBlocks[i].GetPos().x + adjustMagSize;
+		//		}
+
+		//		mColX[i].y = 1;
+
+		//	}
+
+		//}
+		//else {
+		//	mColX[i].y = 0;
+		//}
+
+
+		//debugText_->SetPos(0, 20);
+		//debugText_->Printf("LEFT  = %f", mColX.y);
+
+		//leftmagnet[i] = magnet[i]->GetPosition().x + adjust;
+		//rightmagnet[i] = magnet[i]->GetPosition().x + magnetBlocks[i].GetSize() - adjust;
+
+		//upmagnet[i] = magnet[i]->GetPosition().y - magnetBlocks[i].GetSize() - adjust;
+		//downmagnet[i] = magnet[i]->GetPosition().y + adjust;
+
+
+		//z軸に対しての当たり判定
+		//奥に仮想的に移動して当たったら
+		if (savemap_->mapcol(leftmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i]) || savemap_->mapcol(rightmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i] ))
+		{
+			if (magnetSpeedZ[i] > 0 && mColZ[i].x == 0) {
+				//１ピクセル先に壁が来るまで移動
+				while (true)
+				{
+					if ((savemap_->mapcol(leftmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i] + adjustPixcelSpeed) || savemap_->mapcol(rightmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, backmagnet[i] + adjustPixcelSpeed))) {
+						break;
+					}
+
+					magnetBlocks[i].OnMapCollisionZ2();
+					frontmagnet[i] = magnetBlocks[i].GetPos().z + adjustMagSize;
+					backmagnet[i] = magnetBlocks[i].GetPos().z + magnetBlocks[i].GetSize() - adjustMagSize;
+				}
+
+				mColZ[i].x = 1;
+
+			}
+		}
+		else {
+			mColZ[i].x = 0;
+		}
+
+
+		//debugText_->SetPos(0, 40);
+		//debugText_->Printf("UP    = %f", mColZ.x);
+
+		//手前に仮想的に移動して当たったら
+
+		if (savemap_->mapcol(leftmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i] - magnetSpeedZ[i]) || savemap_->mapcol(rightmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i] - magnetSpeedZ[i]))
+		{
+			if (magnetSpeedZ[i] < 0 && mColZ[i].y == 0) {
+				//１ピクセル先に壁が来るまで移動
+				while (true)
+				{
+					if ((savemap_->mapcol(leftmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i] - adjustPixcelSpeed) || savemap_->mapcol(rightmagnet[i], downmagnet[i] + magnetBlocks[i].GetSize() / 2, frontmagnet[i] - adjustPixcelSpeed))) {
+						break;
+					}
+
+					magnetBlocks[i].OnMapCollisionZ();
+					frontmagnet[i] = magnetBlocks[i].GetPos().z + adjustMagSize;
+					backmagnet[i] = magnetBlocks[i].GetPos().z + magnetBlocks[i].GetSize() - adjustMagSize;
+				}
+
+				mColZ[i].y = 1;
+
+			}
+		}
+		else {
+			mColZ[i].y = 0;
+		}
+	}
 
 }
 
@@ -664,6 +808,7 @@ void GameScene::MagToMagUpdate()
 			if (4.0f > vecLen) {
 				moveSpd = ((4.0f / 1000) - (vecLen / 1000)) / 0.01;
 			}
+			
 
 			//i個目の磁石とj個目の磁力による挙動
 			if (isSame) {
@@ -676,20 +821,38 @@ void GameScene::MagToMagUpdate()
 					pos1 = magnetBlocks[i].GetPos();
 					pos2 = magnetBlocks[j].GetPos();
 
-					setPos[i].x += vecMagToMag.x;
+					if (mColX[i].x == 0) {
+						setPos[i].x += vecMagToMag.x;
+					}
+
 					setPos[i].y += vecMagToMag.y;
-					setPos[i].z += vecMagToMag.z;
-					setPos[j].x -= vecMagToMag.x;
+					
+					if (mColZ[i].x == 0) {
+						setPos[i].z += vecMagToMag.z;
+					}
+
+					if (mColX[j].y == 0) {
+
+						setPos[j].x -= vecMagToMag.x;
+					}
+
 					setPos[j].y -= vecMagToMag.y;
-					setPos[j].z -= vecMagToMag.z;
+
+					if (mColZ[j].y == 0) {
+
+						setPos[j].z -= vecMagToMag.z;
+					}
 
 					//magnetBlocks[i].SetPos(pos1);
 					//magnetBlocks[j].SetPos(pos2);
 
+					magnetBlocks[i].SetSpeed(-vecMagToMag);
+					magnetBlocks[j].SetSpeed(+vecMagToMag);
+
 				}
 			}
 			else {
-				if (vecLen <= 4.0f) {
+				if (vecLen <= 4.0f && vecLen) {
 					//ベクトルを正規化+磁石の速さに直す
 					vecMagToMag = vector3Normalize(vecMagToMag);
 					vecMagToMag *= moveSpd;
@@ -698,13 +861,30 @@ void GameScene::MagToMagUpdate()
 					pos1 = magnetBlocks[i].GetPos();
 					pos2 = magnetBlocks[j].GetPos();
 
-					setPos[i].x -= vecMagToMag.x;
-					setPos[i].y -= vecMagToMag.y;
-					setPos[i].z -= vecMagToMag.z;
-					setPos[j].x += vecMagToMag.x;
-					setPos[j].y += vecMagToMag.y;
-					setPos[j].z += vecMagToMag.z;
+					if (mColX[i].y == 0) {
+						setPos[i].x -= vecMagToMag.x;
+					}
 
+					setPos[i].y -= vecMagToMag.y;
+
+					if (mColZ[i].y == 0) {
+						setPos[i].z -= vecMagToMag.z;
+					}
+
+					if (mColX[j].x == 0) {
+						setPos[j].x += vecMagToMag.x;
+					}
+
+					setPos[j].y += vecMagToMag.y;
+
+					if (mColZ[j].x == 0) {
+						setPos[j].z += vecMagToMag.z;
+
+					}
+
+
+					magnetBlocks[i].SetSpeed(vecMagToMag);
+					magnetBlocks[j].SetSpeed(-vecMagToMag);
 
 					//magnetBlocks[i].SetPos(pos1);
 					//magnetBlocks[j].SetPos(pos2);
@@ -769,9 +949,17 @@ void GameScene::MagToPlayerUpdate()
 						/*Vector3 moveVec;*/
 						bMoveVec = vector3Normalize(vecPlayerToblock);
 						bMoveVec *= moveSpd;
-						setPos[i].x += bMoveVec.x;
+						if (mColX[i].x == 0) {
+							setPos[i].x += bMoveVec.x;
+						}
 						setPos[i].y += bMoveVec.y;
-						setPos[i].z += bMoveVec.z;
+
+						if (mColZ[i].x == 0) {
+							setPos[i].z += bMoveVec.z;
+						}
+
+						magnetBlocks[i].SetSpeed(-bMoveVec);
+
 					}
 				}
 				else {
@@ -780,9 +968,20 @@ void GameScene::MagToPlayerUpdate()
 						/*Vector3 moveVec;*/
 						bMoveVec = vector3Normalize(vecPlayerToblock);
 						bMoveVec *= moveSpd;
-						setPos[i].x -= bMoveVec.x;
+
+						if (mColX[i].y == 0) {
+							setPos[i].x -= bMoveVec.x;
+						}
+
 						setPos[i].y -= bMoveVec.y;
-						setPos[i].z -= bMoveVec.z;
+
+						if (mColZ[i].x == 0) {
+							setPos[i].z -= bMoveVec.z;
+						}
+
+
+						magnetBlocks[i].SetSpeed(-bMoveVec);
+
 					}
 				}
 			}
@@ -796,130 +995,137 @@ void GameScene::MagToPlayerUpdate()
 
 void GameScene::MagnetPower()
 {
-	////磁力のON,OFF
+	//磁力のON,OFF
 
-////4面調べてあったっている方向の磁石とは反応しないように
-
-
-//float bSize = 2; // (2 * 0.99)
-
-//float pSize = 2;
-
-//for (int k = 1; k < 5; k++) {
-
-//	//自機と磁石
-
-//	if (magnetBlocks[i].GetContactNum(k) == i) {
-
-//		debugText_->SetPos(0, 80);
-//		debugText_->Printf("qqqqqqqqqqqq ");
-
-//		if (k == 1) {
-//			if (magnetBlocks[i].GetPos().z + (bSize / 2) <= player->GetPosition().z - (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
-
-//		if (k == 2) {
-//			if (magnetBlocks[i].GetPos().z - (bSize / 2) > player->GetPosition().z + (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
+//4面調べてあったっている方向の磁石とは反応しないように
 
 
-//		if (k == 3) {
-//			if (magnetBlocks[i].GetPos().x - (bSize / 2) >= player->GetPosition().x + (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
+	float bSize = 2; // (2 * 0.99)
+
+	float pSize = 2;
+
+	//配列の最大数-1回for文を回す
+	for (int i = 0; i < magnetBlocks.size() - 1; i++) {
+		//i個目の磁石に対して、i+1 ~ 配列末尾までのブロックと磁石の判定を行う
+		for (int j = i + 1; j < magnetBlocks.size(); j++) {
+
+			for (int k = 1; k < 5; k++) {
+
+				//自機と磁石
+
+				if (magnetBlocks[i].GetContactNum(k) == i) {
+
+					debugText_->SetPos(0, 80);
+					debugText_->Printf("qqqqqqqqqqqq ");
+
+					if (k == 1) {
+						if (magnetBlocks[i].GetPos().z + (bSize / 2) <= player->GetPosition().z - (pSize / 2)) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
+
+					if (k == 2) {
+						if (magnetBlocks[i].GetPos().z - (bSize / 2) > player->GetPosition().z + (pSize / 2)) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
 
 
-//		if (k == 4) {
-//			if (magnetBlocks[i].GetPos().x + (bSize / 2) < player->GetPosition().x - (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
-
-//	}
-//	else {
-//		magnetBlocks[i].SetIsMove(true);
-//	}
-
-//	//磁石同士
-
-//	if (magnetBlocks[i].GetContactNum(k) == 100) {
-//		continue;
-//	}
-
-//	if (magnetBlocks[i].GetContactNum(k) != j && magnetBlocks[i].GetContactNum(k) != i) {
-//		
-//		if (k == 1) {
-//			if (magnetBlocks[i].GetPos().z + (bSize / 2) <= magnetBlocks[j].GetPos().z) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
-
-//		if (k == 2) {
-//			if (magnetBlocks[i].GetPos().z - (bSize / 2) > magnetBlocks[j].GetPos().z) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
+					if (k == 3) {
+						if (magnetBlocks[i].GetPos().x - (bSize / 2) >= player->GetPosition().x + (pSize / 2)) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
 
 
-//		if (k == 3) {
-//			if (magnetBlocks[i].GetPos().x - (bSize / 2) >= magnetBlocks[j].GetPos().x) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
+					if (k == 4) {
+						if (magnetBlocks[i].GetPos().x + (bSize / 2) < player->GetPosition().x - (pSize / 2)) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
+
+				}
+				else {
+					magnetBlocks[i].SetIsMove(true);
+				}
+
+				//磁石同士
+
+				if (magnetBlocks[i].GetContactNum(k) == 100) {
+					continue;
+				}
+
+				if (magnetBlocks[i].GetContactNum(k) != j && magnetBlocks[i].GetContactNum(k) != i) {
+
+					if (k == 1) {
+						if (magnetBlocks[i].GetPos().z + (bSize / 2) <= magnetBlocks[j].GetPos().z) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+						}
+						else {
+							magnetBlocks[i].SetIsMagMove(j, true);
+						}
+					}
+
+					if (k == 2) {
+						if (magnetBlocks[i].GetPos().z - (bSize / 2) > magnetBlocks[j].GetPos().z) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+						}
+						else {
+							magnetBlocks[i].SetIsMagMove(j, true);
+						}
+					}
 
 
-//		if (k == 4) {
-//			if (magnetBlocks[i].GetPos().x + (bSize / 2) < magnetBlocks[j].GetPos().x) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
+					if (k == 3) {
+						if (magnetBlocks[i].GetPos().x - (bSize / 2) >= magnetBlocks[j].GetPos().x) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+						}
+						else {
+							magnetBlocks[i].SetIsMagMove(j, true);
+						}
+					}
 
-//		if (i == 0) {
-//			debugText_->SetPos(0 + (60 * k - 1), 60);
-//			debugText_->Printf("b[%d] b[%d] = ", i, j);
-//		}
 
-//	}
+					if (k == 4) {
+						if (magnetBlocks[i].GetPos().x + (bSize / 2) < magnetBlocks[j].GetPos().x) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+						}
+						else {
+							magnetBlocks[i].SetIsMagMove(j, true);
+						}
+					}
 
-//}
+					if (i == 0) {
+						debugText_->SetPos(0 + (60 * k - 1), 60);
+						debugText_->Printf("b[%d] b[%d] = ", i, j);
+					}
 
-//引き寄せ処理がどちらもONの場合引き寄せるように
+				}
 
-//bool isMagMove = magnetBlocks[i].GetIsMagMove(j);
+			}
 
-//if (isMagMove) {
-//	isMagMove = magnetBlocks[j].GetIsMagMove(i);
-//}
+			//引き寄せ処理がどちらもONの場合引き寄せるように
 
+			//	bool isMagMove = magnetBlocks[i].GetIsMagMove(j);
+
+			//if (isMagMove) {
+			//	isMagMove = magnetBlocks[j].GetIsMagMove(i);
+			//}
+		}
+
+	}
 }
 
 void GameScene::InforUpdate()

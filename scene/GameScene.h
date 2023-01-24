@@ -156,6 +156,12 @@ class GameScene {
 
 	Vector3 bMoveVec;
 
+	//磁石がブロックに当たっているか
+
+	//col[X,Y,Z]がロックする方向 Vector2 の xが+ yが-
+	Vector2 mColX[blockSizeMax] = {};
+	Vector2 mColY[blockSizeMax] = {};
+	Vector2 mColZ[blockSizeMax] = {};
 
 	//--------自機----------
 
@@ -170,6 +176,7 @@ class GameScene {
 	float pPosZ2;
 
 	Vector3 pMoveVec;
+
 
 	/// <summary>
 	/// ゲームシーン用

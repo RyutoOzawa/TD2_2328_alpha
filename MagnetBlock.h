@@ -46,8 +46,8 @@ public:
 	//N極かS極か
 	bool GetIsNorth() const { return isNorth; }
 
-	//移動するスピード
-	float GetMoveSpd()const { return moveSpd; }
+	////移動するスピード
+	//float GetMoveSpd()const { return moveSpd; }
 
 	//当たっていたらtrueを返す
 	bool Colision(Vector3 pos1 ,float pos1Size,Vector3 pos2,float pos2Size);
@@ -59,7 +59,17 @@ public:
 	int GetContactNum(int num) { return  contactNum[num]; }
 	void ReSetContactNum(int num) { this->contactNum[num] = 100; }
 
+	Vector3 GetSpeed()const { return moveSpd; }
+	void SetSpeed(Vector3 speed) { this->moveSpd = speed; }
 
+	//マップチップ当たり判定用 2はマイナス
+	void OnMapCollision();
+	void OnMapCollisionX();
+	void OnMapCollisionY();
+	void OnMapCollisionZ();
+	void OnMapCollisionX2();
+	void OnMapCollisionY2();
+	void OnMapCollisionZ2();
 public:
 
 
@@ -74,7 +84,8 @@ private:
 	Vector3 moveVec;
 
 	bool isNorth = false;
-	float moveSpd = 0.025f;
+	//float moveSpd = 0.025f;
+	Vector3 moveSpd = {};
 
 	//引き寄せ処理ON OFF
 	//プレイヤーとの
@@ -82,8 +93,9 @@ private:
 	//磁石との
 	bool isMagMove[20] = {};
 
-	float size = 2;
+	float size = 1.99;
 
 	int contactNum[5] = {};
 
+	float adjustPixcelSpeed = 0.001;
 };
