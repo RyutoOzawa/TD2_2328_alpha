@@ -20,71 +20,23 @@ void MagnetBlock::Initialize(MagnetData magnetData)
 
 	//引数で受け取った座標を反映
 	worldTransform.translation_ = pos;
-	worldTransform.scale_ = Vector3(0.99f,0.99f,0.99f);
+	worldTransform.scale_ = Vector3(0.99f, 0.99f, 0.99f);
 	worldTransformUpdate(&worldTransform);
 
 	isNorth = magnetData.isNorth_;
 
-	for (int i = 0; i < MagMax; i++) {
-		isMagMove[i]  = true;
+	for (int i = 0; i < 20; i++) {
+		isMagMove[i] = true;
+
+	}
+
+	for (int j = 0; j < 5; j++) {
+		contactNum[j] = 100;
 	}
 }
 
-void MagnetBlock::Update(const Vector3& playerPos, int playerState, float moveDistance)
+void MagnetBlock::Update()
 {
-
-	if (isMove) {
-
-		//自機の状態が磁石なら引き寄せ等の処理を行う
-		if (playerState != UnMagnet) {
-			bool isPlayerNorth = false;
-			if (playerState == NorthPole) {
-				isPlayerNorth = true;
-			}
-			else if (playerState == SouthPole) {
-				isPlayerNorth = false;
-			}
-			bool isPull;
-			if (isPlayerNorth == isNorth) {
-
-				isPull = false;
-			}
-			else {
-				isPull = true;
-			}
-
-			//自機座標を参照し、自機と磁石の距離を計算
-			Vector3 vecPlayerToblock;
-			vecPlayerToblock.x = playerPos.x - pos.x;
-			vecPlayerToblock.y = playerPos.y - pos.y;
-			vecPlayerToblock.z = playerPos.z - pos.z;
-			//ベクトルの長さは移動開始距離以下なら自機、磁石の磁力を使って引き寄せ等の処理
-			float vecLength = vector3Length(vecPlayerToblock);
-			if (isPull) {
-
-				if (vecLength <= moveDistance) {
-					/*Vector3 moveVec;*/
-					moveVec = Vector3Normalize(vecPlayerToblock);
-					moveVec *= moveSpd;
-					pos.x += moveVec.x;
-					pos.y += moveVec.y;
-					pos.z += moveVec.z;
-				}
-			}
-			else {
-
-				if (vecLength <= moveDistance) {
-					/*Vector3 moveVec;*/
-					moveVec = Vector3Normalize(vecPlayerToblock);
-					moveVec *= moveSpd;
-					pos.x -= moveVec.x;
-					pos.y -= moveVec.y;
-					pos.z -= moveVec.z;
-				}
-			}
-		}
-
-	}
 
 	//座標を反映
 	worldTransform.translation_ = pos;
@@ -100,4 +52,44 @@ void MagnetBlock::Draw(const ViewProjection& viewProjection, const uint32_t& nPo
 		magnetTex = nPoleTexture;
 	}
 	model->Draw(worldTransform, viewProjection, magnetTex);
+}
+
+//void MagnetBlock::AddTenPos(Vector3 pos)
+//{
+//	this->tentativePos.x += pos.x; 
+//	this->tentativePos.y += pos.y;
+//	this->tentativePos.z += pos.z;
+//}
+//
+//void MagnetBlock::SubTenPos(Vector3 pos)
+//{
+//	this->tentativePos.x -= pos.x;
+//	this->tentativePos.y -= pos.y;
+//	this->tentativePos.z -= pos.z;
+//}
+
+bool MagnetBlock::Colision(Vector3 pos1, float pos1Size, Vector3 pos2, float pos2Size)
+{
+	float pos1X1 = pos1.x - (pos1Size / 2);
+	float pos1X2 = pos1.x + (pos1Size / 2);
+
+	float pos1Z1 = pos1.z - (pos1Size / 2);
+	float pos1Z2 = pos1.z + (pos1Size / 2);
+
+	float pos2X1 = pos2.x - (pos2Size / 2);
+	float pos2X2 = pos2.x + (pos2Size / 2);
+
+	float pos2Z1 = pos2.z - (pos2Size / 2);
+	float pos2Z2 = pos2.z + (pos2Size / 2);
+
+	if (pos1X1 < pos2X2 && pos2X1 < pos1X2) {
+
+		if (pos1Z1 < pos2Z2 && pos2Z1 < pos1Z2) {
+
+			return true;
+
+		}
+	}
+
+	return false;
 }

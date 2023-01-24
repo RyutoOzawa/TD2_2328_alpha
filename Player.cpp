@@ -48,8 +48,9 @@ void Player::Update()
 	}
 
 	//行列の更新
+	//座標を反映
+	worldTransform.translation_ = pos;
 	worldTransformUpdate(&worldTransform);
-
 
 }
 
@@ -94,9 +95,6 @@ void Player::Move()
 	else {
 		move.z = 0;
 	}
-
-	//座標を反映
-	worldTransform.translation_ = pos;
 
 }
 

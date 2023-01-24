@@ -61,6 +61,8 @@ public:
 	void SetColY(Vector2 colY) { this->colY = colY; }
 	void SetColZ(Vector2 colZ) { this->colZ = colZ; }
 
+	void SetPos(Vector3 pos) { this->pos = pos; }
+
 
 	/// <summary>
 	/// メンバ変数
