@@ -69,6 +69,9 @@ class GameScene {
 	//座標などの情報を更新
 	void InforUpdate();
 
+	//くっついたブロックの移動ベクトルを統一させる
+	void StickMag();
+
 	//mainPos のどの面にsubPosにあったっか
 	int GetContact(Vector3 mainPos,Vector3 subPos);
 
@@ -79,8 +82,6 @@ class GameScene {
 	Vector3 ChangeVec(Vector3 changeVec,float size);
 
 	float lengthVec(Vector3 vec);
-
-
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;

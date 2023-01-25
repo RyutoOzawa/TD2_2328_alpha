@@ -100,18 +100,23 @@ void GameScene::Update() {
 	//磁石と自機の当たり判定(押し戻し処理)
 	PosCollision();
 
+	//くっついてるブロックの移動を統一
+	//StickMag();
+
+	//磁力切り替え
+	//MagnetPower();
+
 	//座標の更新
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 		//計算した座標を確定
 
 		magnetBlocks[i].SetPos(setPos[i]);
 
-		debugText_->SetPos(0, 0);
-		//debugText_->Printf("b[%d] b[%d] = (%f,%f,%f)", i, j, adjust.x, adjust.y, adjust.z);
-		debugText_->Printf("setPos[0] = (%f,%f,%f)", setPos[0].x, setPos[0].y, setPos[0].z);
-
-
 		magnetBlocks[i].Update();
+
+		//debugText_->SetPos(0, 0);
+		//debugText_->Printf("setPos[0] = (%f,%f,%f)", setPos[0].x, setPos[0].y, setPos[0].z);
+
 	}
 
 	player->Update();
@@ -618,7 +623,7 @@ void GameScene::PosCollision()
 
 		debugText_->SetPos(0 + (100 * (k - 1)), 100);
 
-		debugText_->Printf("%d =  %d ", k, magnetBlocks[0].GetContactNum(k));
+		debugText_->Printf("%d =  %d ", k, magnetBlocks[1].GetContactNum(k));
 
 	}
 
@@ -630,93 +635,106 @@ void GameScene::PosCollision()
 
 void GameScene::MagnetsUpdate() {
 
+	MagToPlayerUpdate();
+
 	MagToMagUpdate();
 
-	MagToPlayerUpdate();
 
 }
 
 void GameScene::MagToMagUpdate()
-{	//配列の最大数-1回for文を回す
+{
+
+	//配列の最大数-1回for文を回す
 	for (int i = 0; i < magnetBlocks.size() - 1; i++) {
+
 		//i個目の磁石に対して、i+1 ~ 配列末尾までのブロックと磁石の判定を行う
 		for (int j = i + 1; j < magnetBlocks.size(); j++) {
 
+			// 引き寄せ処理がどちらもONの場合引き寄せるように
+			bool isMagMove = magnetBlocks[i].GetIsMagMove(j);
 
-			bool isSame = false;
-			//同極か対極か
-			if (magnetBlocks[i].GetIsNorth() == magnetBlocks[j].GetIsNorth()) {
-				isSame = true;
+			if (isMagMove) {
+				isMagMove = magnetBlocks[j].GetIsMagMove(i);
 			}
 
-			//ブロック同士のベクトル作成
-			Vector3 vecMagToMag;
-			vecMagToMag.x = magnetBlocks[i].GetPos().x - magnetBlocks[j].GetPos().x;
-			vecMagToMag.y = magnetBlocks[i].GetPos().y - magnetBlocks[j].GetPos().y;
-			vecMagToMag.z = magnetBlocks[i].GetPos().z - magnetBlocks[j].GetPos().z;
 
-			//ベクトルの長さ取得
-			float vecLen = vector3Length(vecMagToMag);
+			if (isMagMove) {
 
-			float moveSpd = 0.025;
+				bool isSame = false;
+				//同極か対極か
+				if (magnetBlocks[i].GetIsNorth() == magnetBlocks[j].GetIsNorth()) {
+					isSame = true;
+				}
 
-			//距離で磁力の強さを変化させる
-			if (4.0f > vecLen) {
-				moveSpd = ((4.0f / 1000) - (vecLen / 1000)) / 0.01;
-			}
+				//ブロック同士のベクトル作成
+				Vector3 vecMagToMag;
+				vecMagToMag.x = magnetBlocks[i].GetPos().x - magnetBlocks[j].GetPos().x;
+				vecMagToMag.y = magnetBlocks[i].GetPos().y - magnetBlocks[j].GetPos().y;
+				vecMagToMag.z = magnetBlocks[i].GetPos().z - magnetBlocks[j].GetPos().z;
 
-			//i個目の磁石とj個目の磁力による挙動
-			if (isSame) {
-				if (vecLen <= 4.0f) {
-					//ベクトルを正規化+磁石の速さに直す
-					vecMagToMag = vector3Normalize(vecMagToMag);
-					vecMagToMag *= moveSpd;
-					//それぞれのブロックに加算
-					Vector3 pos1, pos2;
-					pos1 = magnetBlocks[i].GetPos();
-					pos2 = magnetBlocks[j].GetPos();
+				//ベクトルの長さ取得
+				float vecLen = vector3Length(vecMagToMag);
 
-					setPos[i].x += vecMagToMag.x;
-					setPos[i].y += vecMagToMag.y;
-					setPos[i].z += vecMagToMag.z;
-					setPos[j].x -= vecMagToMag.x;
-					setPos[j].y -= vecMagToMag.y;
-					setPos[j].z -= vecMagToMag.z;
+				float moveSpd = 0.025;
 
-					//magnetBlocks[i].SetPos(pos1);
-					//magnetBlocks[j].SetPos(pos2);
+				//距離で磁力の強さを変化させる
+				if (4.0f > vecLen) {
+					moveSpd = ((4.0f / 1000) - (vecLen / 1000)) / 0.01;
+				}
 
+				//i個目の磁石とj個目の磁力による挙動
+				if (isSame) {
+					if (vecLen <= 4.0f) {
+						//ベクトルを正規化+磁石の速さに直す
+						vecMagToMag = vector3Normalize(vecMagToMag);
+						vecMagToMag *= moveSpd;
+						//それぞれのブロックに加算
+						Vector3 pos1, pos2;
+						pos1 = magnetBlocks[i].GetPos();
+						pos2 = magnetBlocks[j].GetPos();
+
+						setPos[i].x += vecMagToMag.x;
+						setPos[i].y += vecMagToMag.y;
+						setPos[i].z += vecMagToMag.z;
+						setPos[j].x -= vecMagToMag.x;
+						setPos[j].y -= vecMagToMag.y;
+						setPos[j].z -= vecMagToMag.z;
+
+						//magnetBlocks[i].SetPos(pos1);
+						//magnetBlocks[j].SetPos(pos2);
+
+					}
+				}
+				else {
+					if (vecLen <= 4.0f) {
+						//ベクトルを正規化+磁石の速さに直す
+						vecMagToMag = vector3Normalize(vecMagToMag);
+						vecMagToMag *= moveSpd;
+						//それぞれのブロックに加算
+						Vector3 pos1, pos2;
+						pos1 = magnetBlocks[i].GetPos();
+						pos2 = magnetBlocks[j].GetPos();
+
+						setPos[i].x -= vecMagToMag.x;
+						setPos[i].y -= vecMagToMag.y;
+						setPos[i].z -= vecMagToMag.z;
+						setPos[j].x += vecMagToMag.x;
+						setPos[j].y += vecMagToMag.y;
+						setPos[j].z += vecMagToMag.z;
+
+
+						//magnetBlocks[i].SetPos(pos1);
+						//magnetBlocks[j].SetPos(pos2);
+
+						debugText_->SetPos(0, 20);
+						debugText_->Printf("b[%d] b[%d] = (%f,%f,%f)", i, j, vecMagToMag.x, vecMagToMag.y, vecMagToMag.z);
+
+					}
 				}
 			}
-			else {
-				if (vecLen <= 4.0f) {
-					//ベクトルを正規化+磁石の速さに直す
-					vecMagToMag = vector3Normalize(vecMagToMag);
-					vecMagToMag *= moveSpd;
-					//それぞれのブロックに加算
-					Vector3 pos1, pos2;
-					pos1 = magnetBlocks[i].GetPos();
-					pos2 = magnetBlocks[j].GetPos();
 
-					setPos[i].x -= vecMagToMag.x;
-					setPos[i].y -= vecMagToMag.y;
-					setPos[i].z -= vecMagToMag.z;
-					setPos[j].x += vecMagToMag.x;
-					setPos[j].y += vecMagToMag.y;
-					setPos[j].z += vecMagToMag.z;
-
-
-					//magnetBlocks[i].SetPos(pos1);
-					//magnetBlocks[j].SetPos(pos2);
-
-					debugText_->SetPos(0, 20);
-					debugText_->Printf("b[%d] b[%d] = (%f,%f,%f)", i, j, vecMagToMag.x, vecMagToMag.y, vecMagToMag.z);
-
-				}
-			}
 		}
-
-
 	}
 
 }
@@ -796,130 +814,161 @@ void GameScene::MagToPlayerUpdate()
 
 void GameScene::MagnetPower()
 {
-	////磁力のON,OFF
+	//磁力のON,OFF
 
-////4面調べてあったっている方向の磁石とは反応しないように
-
-
-//float bSize = 2; // (2 * 0.99)
-
-//float pSize = 2;
-
-//for (int k = 1; k < 5; k++) {
-
-//	//自機と磁石
-
-//	if (magnetBlocks[i].GetContactNum(k) == i) {
-
-//		debugText_->SetPos(0, 80);
-//		debugText_->Printf("qqqqqqqqqqqq ");
-
-//		if (k == 1) {
-//			if (magnetBlocks[i].GetPos().z + (bSize / 2) <= player->GetPosition().z - (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
-
-//		if (k == 2) {
-//			if (magnetBlocks[i].GetPos().z - (bSize / 2) > player->GetPosition().z + (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
+	//4面調べてあったっている方向の磁石とは反応しないように
 
 
-//		if (k == 3) {
-//			if (magnetBlocks[i].GetPos().x - (bSize / 2) >= player->GetPosition().x + (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
+	float bSize = 2; // (2 * 0.99)
+
+	float pSize = 2;
+
+	int isPower[20] = {};
+
+	//配列の最大数-1回for文を回す
+	for (int i = 0; i < magnetBlocks.size() - 1; i++) {
+
+		//i個目の磁石に対して、i+1 ~ 配列末尾までのブロックと磁石の判定を行う
+		for (int j = i + 1; j < magnetBlocks.size(); j++) {
+
+			for (int k = 1; k < 5; k++) {
+
+				////自機と磁石
+
+				if (magnetBlocks[i].GetContactNum(k) == i) {
+
+		/*			debugText_->SetPos(0, 80);
+					debugText_->Printf("qqqqqqqqqqqq ");*/
+
+					if (k == 1) {
+						if (magnetBlocks[i].GetPos().z + (bSize / 2) <= player->GetPosition().z) {
+							magnetBlocks[i].SetIsMove(false);
+
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
+
+					if (k == 2) {
+						if (magnetBlocks[i].GetPos().z - (bSize / 2) > player->GetPosition().z) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
 
 
-//		if (k == 4) {
-//			if (magnetBlocks[i].GetPos().x + (bSize / 2) < player->GetPosition().x - (pSize / 2)) {
-//				magnetBlocks[i].SetIsMove(false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMove(true);
-//			}
-//		}
-
-//	}
-//	else {
-//		magnetBlocks[i].SetIsMove(true);
-//	}
-
-//	//磁石同士
-
-//	if (magnetBlocks[i].GetContactNum(k) == 100) {
-//		continue;
-//	}
-
-//	if (magnetBlocks[i].GetContactNum(k) != j && magnetBlocks[i].GetContactNum(k) != i) {
-//		
-//		if (k == 1) {
-//			if (magnetBlocks[i].GetPos().z + (bSize / 2) <= magnetBlocks[j].GetPos().z) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
-
-//		if (k == 2) {
-//			if (magnetBlocks[i].GetPos().z - (bSize / 2) > magnetBlocks[j].GetPos().z) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
+					if (k == 3) {
+						if (magnetBlocks[i].GetPos().x - (bSize / 2) >= player->GetPosition().x) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
 
 
-//		if (k == 3) {
-//			if (magnetBlocks[i].GetPos().x - (bSize / 2) >= magnetBlocks[j].GetPos().x) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
+					if (k == 4) {
+						if (magnetBlocks[i].GetPos().x + (bSize / 2) < player->GetPosition().x) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
+
+				}
+				else {
+					magnetBlocks[i].SetIsMove(true);
+				}
+
+				//磁石同士
+
+				if (magnetBlocks[i].GetContactNum(k) == 100) {
+					continue;
+				}
+
+				//debugText_->SetPos(0, 40);
+				//debugText_->Printf("qqqqqqqqqqqq ");
+
+				if (magnetBlocks[i].GetContactNum(k) != j && magnetBlocks[i].GetContactNum(k) != i) {
+
+					if (k == 1) {
+						if (magnetBlocks[i].GetPos().z + (bSize / 2) <= magnetBlocks[j].GetPos().z) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+							isPower[i] = 1;
+						}
+						else {
+							if (isPower[i] == 0) {
+								magnetBlocks[i].SetIsMagMove(j, true);
+							}
+						}
+					}
+
+					else if (k == 2) {
+						if (magnetBlocks[i].GetPos().z - (bSize / 2)  > magnetBlocks[j].GetPos().z) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+							isPower[i] = 1;
+
+						}
+						else {
+							if (isPower[i] == 0) {
+								magnetBlocks[i].SetIsMagMove(j, true);
+							}
+						}
+					}
 
 
-//		if (k == 4) {
-//			if (magnetBlocks[i].GetPos().x + (bSize / 2) < magnetBlocks[j].GetPos().x) {
-//				magnetBlocks[i].SetIsMagMove(j, false);
-//			}
-//			else {
-//				magnetBlocks[i].SetIsMagMove(j, true);
-//			}
-//		}
+					else if (k == 3) {
+						if (magnetBlocks[i].GetPos().x - (bSize / 2) >= magnetBlocks[j].GetPos().x) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+							isPower[i] = 1;
 
-//		if (i == 0) {
-//			debugText_->SetPos(0 + (60 * k - 1), 60);
-//			debugText_->Printf("b[%d] b[%d] = ", i, j);
-//		}
+						}
+						else {
+							if (isPower[i] == 0) {
+								magnetBlocks[i].SetIsMagMove(j, true);
+							}
+						}
+					}
 
-//	}
 
-//}
+					else if (k == 4) {
+						if (magnetBlocks[i].GetPos().x + (bSize / 2) < magnetBlocks[j].GetPos().x) {
+							magnetBlocks[i].SetIsMagMove(j, false);
+							isPower[i] = 1;
 
-//引き寄せ処理がどちらもONの場合引き寄せるように
 
-//bool isMagMove = magnetBlocks[i].GetIsMagMove(j);
+						}
+						else {
+							if (isPower[i] == 0) {
+								magnetBlocks[i].SetIsMagMove(j, true);
+							}
+						}
+					}
 
-//if (isMagMove) {
-//	isMagMove = magnetBlocks[j].GetIsMagMove(i);
-//}
+					if (i == 0) {
+						debugText_->SetPos(0 + (60 * k - 1), 60);
+						debugText_->Printf("b[%d] b[%d] = ", i, j);
+					}
 
+				}
+
+			}
+
+		}
+	}
+
+
+	for (int i = 0; i < 4; i++) {
+
+		debugText_->SetPos(0 + (100 * i), 80);
+
+		debugText_->Printf("%d =  %d ", i, magnetBlocks[1].GetIsMagMove(i));
+
+	}
 }
 
 void GameScene::InforUpdate()
@@ -959,6 +1008,89 @@ void GameScene::InforUpdate()
 	pPosZ2 = pPos.z + (pSize / 2);
 
 	pMoveVec = player->GetMove();
+}
+
+void GameScene::StickMag()
+{
+
+
+	bool stickBlockMass[20];
+
+	//くっついているブロックをtrueに
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+
+		stickBlockMass[i] = false;
+
+		for (int k = 1; k < 5; k++) {
+
+			//もしくっついているなら
+			if (magnetBlocks[i].GetContactNum(k) != 100 && magnetBlocks[i].GetContactNum(k) != i) {
+
+				stickBlockMass[i] = true;
+
+				stickBlockMass[magnetBlocks[i].GetContactNum(k)] = true;
+
+			}
+		}
+	}
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		for (int j = 0; j < magnetBlocks.size(); j++) {
+
+			debugText_->SetPos((100 * j),140 + (20 * i));
+			debugText_->Printf("%d", magnetBlocks[j].GetIsMagMove(i));
+
+		}
+	}
+
+	debugText_->SetPos(0, 200);
+	debugText_->Printf("adsddadad");
+
+	////くっついたらそのブロックから離れないようにする処理
+
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
+
+	//	//ほかの磁石にくっついているとき
+	//	if (magnetBlocks[i].GetIsStick() == true) {
+
+	//		Vector3 setPos = magnetBlocks[i].GetPos();
+	//		contact = magnetBlocks[i].GetIsStickContact();
+
+	//		int stickBlockNum = magnetBlocks[i].GetIsStickBlockNum();
+	//		Vector3 stickPos = magnetBlocks[stickBlockNum].GetPos();
+
+	//		int blockSize = 2;
+
+	//		//当たった時の処理
+	//		if (contact == 1) {
+	//			setPos.z = (stickPos.z - blockSize);
+	//			setPos.x = stickPos.x;
+	//		}
+	//		else if (contact == 2) {
+	//			setPos.z = (stickPos.z + blockSize);
+	//			setPos.x = stickPos.x;
+	//		}
+	//		else if (contact == 3) {
+	//			setPos.x = (stickPos.x + blockSize);
+	//			setPos.z = stickPos.z;
+	//		}
+	//		else if (contact == 4) {
+	//			setPos.x = (stickPos.x - blockSize);
+	//			setPos.z = stickPos.z;
+	//		}
+
+	//		////計算した座標をセット
+	//		magnetBlocks[i].SetPos(setPos);
+
+	//	}
+	//	else {
+
+	//	}
+
+	//}
+
 }
 
 int GameScene::GetContact(Vector3 mainPos, Vector3 subPos)
