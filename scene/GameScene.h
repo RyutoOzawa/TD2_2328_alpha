@@ -124,7 +124,7 @@ class GameScene {
 	Vector2 ColZ = { 0,0 };
 
 	//くっついているブロックの番号
-	bool stickBlockMass[20];
+	bool stickBlockMass[20] = {0,0,0,0};
 
 	//くっついているブロックの中でどれが1番プレイヤーに近いか
 	int mostNearPlayerBlock = 0;
@@ -155,7 +155,12 @@ class GameScene {
 
 	Vector3 setPos[blockSizeMax] = {};
 
-	Vector3 bMoveVec;
+	//Vector3 bMoveVec;
+
+
+	Vector3 bMoveVec[blockSizeMax] = {};
+
+	//Vector3 moveVec2 = { };
 
 
 	//--------自機----------
