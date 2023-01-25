@@ -396,6 +396,8 @@ void GameScene::PosCollision()
 		bPosX1[i] = setPos[i].x - (bSize / 2) + bMoveVec[i].x;
 		bPosX2[i] = setPos[i].x + (bSize / 2) + bMoveVec[i].x;
 
+
+
 		bPosZ1[i] = setPos[i].z - (bSize / 2) + bMoveVec[i].z;
 		bPosZ2[i] = setPos[i].z + (bSize / 2) + bMoveVec[i].z;
 
@@ -410,9 +412,9 @@ void GameScene::PosCollision()
 			if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
 
 				Vector3 pos1 = pPos;
-				Vector3 pos2 = {setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y ,setPos[i].z + bMoveVec[i].z};
+				Vector3 pos2 = { setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y ,setPos[i].z + bMoveVec[i].z };
 
-				float pos1Size = pSize + 0.4;
+				float pos1Size = pSize;
 				float pos2Size = bSize;
 
 				//調整用
@@ -548,10 +550,14 @@ void GameScene::PosCollision()
 
 		//ブロック 座標
 
+
 		bPos[i] = setPos[i];
+
 
 		bPosX1[i] = setPos[i].x - (bSize / 2) + bMoveVec[i].x;
 		bPosX2[i] = setPos[i].x + (bSize / 2) + bMoveVec[i].x;
+
+
 
 		bPosZ1[i] = setPos[i].z - (bSize / 2) + bMoveVec[i].z;
 		bPosZ2[i] = setPos[i].z + (bSize / 2) + bMoveVec[i].z;
@@ -574,6 +580,21 @@ void GameScene::PosCollision()
 				break;
 			}
 
+			Vector3 pos1 = { setPos[i].x + bMoveVec[i].x, setPos[i].y + bMoveVec[i].y ,setPos[i].z + bMoveVec[i].z };
+
+			Vector3 pos2 = { setPos[j].x + bMoveVec[j].x, setPos[j].y + bMoveVec[j].y ,setPos[j].z + bMoveVec[j].z };
+
+			float pos1Size = bSize;
+			float pos2Size = bSize;
+
+			//調整用
+			Vector3 adjust = GetVec(pos1, pos2);
+
+			adjust = ChangeVec(adjust, 0.0001f);
+
+			int contact1 = GetContact(pos2, pos1);
+			int contact2 = GetContact(pos1, pos2);
+
 
 			if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
 
@@ -581,21 +602,6 @@ void GameScene::PosCollision()
 
 					//Vector3 pos1 = magnetBlocks[i].GetPos();
 					//Vector3 pos2 = magnetBlocks[j].GetPos();
-
-					Vector3 pos1 = { setPos[i].x + bMoveVec[i].x, setPos[i].y + bMoveVec[i].y ,setPos[i].z + bMoveVec[i].z };
-
-					Vector3 pos2 = { setPos[j].x + bMoveVec[j].x, setPos[j].y + bMoveVec[j].y ,setPos[j].z + bMoveVec[j].z };
-
-					float pos1Size = bSize;
-					float pos2Size = bSize;
-
-					//調整用
-					Vector3 adjust = GetVec(pos1, pos2);
-
-					adjust = ChangeVec(adjust, 0.0001f);
-
-					int contact1 = GetContact(pos2, pos1);
-					int contact2 = GetContact(pos1, pos2);
 
 					//押し戻し処理
 					while (true)
@@ -636,15 +642,15 @@ void GameScene::PosCollision()
 
 							}
 
-							magnetBlocks[i].SetContactNum(contact1, j);
-							magnetBlocks[j].SetContactNum(contact2, i);
-
 						}
 						else {
 							break;
 						}
 
 					}
+
+					magnetBlocks[i].SetContactNum(contact1, j);
+					magnetBlocks[j].SetContactNum(contact2, i);
 
 
 					//当たってないところでセット
@@ -656,6 +662,7 @@ void GameScene::PosCollision()
 					//debugText_->SetPos(0, 20);
 					//debugText_->Printf("b[%d] b[%d] true", i, j);
 				}
+
 			}
 
 		}
@@ -667,13 +674,13 @@ void GameScene::PosCollision()
 
 	debugText_->SetPos(0, 100);
 
-	debugText_->Printf("[0]con");
+	debugText_->Printf("[2]con");
 
 	for (int k = 1; k < 5; k++) {
 
 		debugText_->SetPos(0 + (100 * (k - 1)), 100);
 
-		debugText_->Printf("         %d =  %d ", k, magnetBlocks[0].GetContactNum(k));
+		debugText_->Printf("         %d =  %d ", k, magnetBlocks[2].GetContactNum(k));
 
 	}
 
@@ -785,9 +792,9 @@ void GameScene::MagToMagUpdate()
 
 				//ブロック同士のベクトル作成
 				Vector3 vecMagToMag;
-				vecMagToMag.x = (magnetBlocks[i].GetPos().x + bMoveVec[i].x) - (magnetBlocks[j].GetPos().x + bMoveVec[j].x);
-				vecMagToMag.y = (magnetBlocks[i].GetPos().y + bMoveVec[i].y) - (magnetBlocks[j].GetPos().y + bMoveVec[j].y);
-				vecMagToMag.z = (magnetBlocks[i].GetPos().z + bMoveVec[i].z) - (magnetBlocks[j].GetPos().z + bMoveVec[j].z);
+				vecMagToMag.x = (magnetBlocks[i].GetPos().x) - (magnetBlocks[j].GetPos().x);
+				vecMagToMag.y = (magnetBlocks[i].GetPos().y) - (magnetBlocks[j].GetPos().y);
+				vecMagToMag.z = (magnetBlocks[i].GetPos().z) - (magnetBlocks[j].GetPos().z);
 
 				//ベクトルの長さ取得
 				float vecLen = vector3Length(vecMagToMag);
@@ -878,7 +885,7 @@ void GameScene::MagToPlayerUpdate()
 
 		if (magnetBlocks[i].GetIsMove()) {
 
-			Vector3 pos = { setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y,setPos[i].z + bMoveVec[i].z};
+			Vector3 pos = { setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y,setPos[i].z + bMoveVec[i].z };
 
 			//自機の状態が磁石なら引き寄せ等の処理を行う
 			if (pState != UnMagnet) {
@@ -1042,7 +1049,7 @@ void GameScene::MagnetPower()
 					if (magnetBlocks[i].GetContactNum(k) != j) {
 
 						if (k == 1) {
-							if (setPos[i].z + (bSize / 2) + bMoveVec[i].z <= setPos[j].z + bMoveVec[j].z) {
+							if (setPos[i].z + (bSize / 2) + bMoveVec[i].z < setPos[j].z + bMoveVec[j].z) {
 								magnetBlocks[i].SetIsMagMove(j, false);
 								isPower[i] = 1;
 							}
@@ -1129,11 +1136,11 @@ void GameScene::MagnetPower()
 	}
 
 	debugText_->SetPos(0, 80);
-	debugText_->Printf("[0] isMag");
+	debugText_->Printf("[2] isMag");
 	for (int i = 0; i < 4; i++) {
 
 		debugText_->SetPos(0 + (100 * i), 80);
-		debugText_->Printf("         %d =  %d ", i, magnetBlocks[0].GetIsMagMove(i));
+		debugText_->Printf("         %d =  %d ", i, magnetBlocks[2].GetIsMagMove(i));
 
 	}
 }
@@ -1199,7 +1206,7 @@ void GameScene::StickMag()
 
 				if (k == 1 || k == 2) {
 
-				
+
 					float diff = (setPos[i].x + bMoveVec[i].x) - (setPos[magnetBlocks[i].GetContactNum(k)].x + bMoveVec[magnetBlocks[i].GetContactNum(k)].x);
 
 					//完全にくっついたらくっついたをtrueに
